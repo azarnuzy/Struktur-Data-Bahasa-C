@@ -77,6 +77,7 @@ void addFirst(char nim[], char nama[], char nilai[], list *L) {
 
 void addAfter(int prev, char nim[], char nama[], char nilai[], list *L) {
     if(countElement(*L) < 10) {
+        printf("%d %d\n", countElement(*L), emptyElement(*L));
         int baru = emptyElement(*L);
         strcpy((*L).data[baru].kontainer.nim, nim);
         strcpy((*L).data[baru].kontainer.nama, nama);
@@ -162,7 +163,7 @@ void printElement(list L) {
         int i = 1;
 
         while(tunjuk != -1) {
-            printf("elemene ke: %d\n", i);
+            printf("elemen ke: %d\n", i);
             printf("nim: %s\n", L.data[tunjuk].kontainer.nim);
             printf("nama: %s\n", L.data[tunjuk].kontainer.nama);
             printf("nilai: %s\n", L.data[tunjuk].kontainer.nilai);
