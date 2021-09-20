@@ -106,6 +106,7 @@ void addLast(char merek[], char warna[], int ukuran, list *L) {
         }
     }
 }
+
 /* 
 *hapus sebagai index untuk elemen yang dihapus
  */
