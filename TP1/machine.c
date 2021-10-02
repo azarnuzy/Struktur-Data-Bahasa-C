@@ -1,15 +1,24 @@
 #include "header.h"
 
+/* 
+*first sebagai penunjuk kepada elemen yang pertama
+*next sebagai penunjuk dari elemen selanjutnya 
+*NULL sebagai nilai awal dari first
+ */
 void createList(list *L) {
     (*L).first = NULL;
 }
 
+/* 
+*hasil sebagai nilai kembali dari elemen yang tersedia
+*tunjuk sebagai kondisi pengecekan untuk banyaknya elemen
+ */
 int countElement(list L) {
     int hasil = 0;
     if(L.first != NULL) {
         elemen* tunjuk;
         tunjuk = L.first;
-        while(tunjuk != NULL) {
+        while(tunjuk != NULL) {     //perulangan untuk menghitung banyaknya element
             hasil += 1;
             tunjuk = tunjuk->next;
         }
@@ -17,29 +26,39 @@ int countElement(list L) {
     return hasil;
 }
 
+/* 
+*ketemu sebagai kondisi pengecekan jika ditemukan elemen yang kosong
+*baru sebagai pointer bertipe elemen dan beralokasikan memory dan di paksa menjadi pointer melalui casting dari memory alokasi elemen
+ */
 void addFirst(char nama[], int harga, float rating, list *L) {
     elemen* baru;
     baru = (elemen*) malloc (sizeof (elemen));
+    //memasukan nilai dari input
     strcpy(baru -> kontainer.nama, nama);
     baru -> kontainer.rating = rating;
     baru -> kontainer.harga = harga;
+    //kondisi untuk penambahan dengan kondisi list kosong dan banyak elemen
     if((*L).first == NULL) {
         baru -> next = NULL;
     }else {
         baru->next = (*L).first;
     }
+    //menjadikan first sebagai nilai baru
     (*L).first = baru;
     baru = NULL;
 }
 
-
+/* 
+*prev sebagai index dari nilai sebelum ditambahkan nilai yang baru
+ */
 void addAfter(elemen* prev, char nama[], int harga, float rating, list *L) {
     elemen *baru;
     baru = (elemen*) malloc (sizeof (elemen));
+    //memasukan nilai dari input
     strcpy(baru -> kontainer.nama, nama);
     baru -> kontainer.rating = rating;
     baru -> kontainer.harga = harga;
-
+    //kondisi  dari elemen sebelum adalah terakhir dan elemen sebelum di tengah
     if(prev->next == NULL) {
         baru->next = NULL;
     }else {
@@ -51,6 +70,7 @@ void addAfter(elemen* prev, char nama[], int harga, float rating, list *L) {
 }
 
 void addLast(char nama[], int harga, float rating, list *L) {
+    //kondisi jika list kosongdan jika list tidak kosong
     if((*L).first ==NULL) {
         addFirst(nama,harga, rating, L);
     }else {
@@ -62,14 +82,18 @@ void addLast(char nama[], int harga, float rating, list *L) {
     }
 }
 
+/* 
+* posisi nilai untuk menunjukan pada posisi mana elemen tersebut sedang dibandingkan
+* cek sebagai nilai untuk pembatalan looping pada list baru
+ */
 void sortDinamyc(list L1, list *L2, char urutanMenu[]) {
     elemen* tunjuk1 = L1.first;
     elemen* prev;
-
+    /* memasukan nilai awal ke list baru */
     addFirst(tunjuk1 -> kontainer.nama, tunjuk1 -> kontainer.harga, tunjuk1 -> kontainer.rating, L2);
-
+    /* menggeser penunjuk ke elemen berikutnya */
     tunjuk1 = tunjuk1 -> next;
-    
+    /* perulangan untuk list masukan */
     while(tunjuk1 != NULL) {
 
         int posisi = 1;
@@ -77,8 +101,14 @@ void sortDinamyc(list L1, list *L2, char urutanMenu[]) {
         elemen* tunjuk2 = (*L2).first;
 
         prev = (*L2).first;
-
+        /* perulangan untuk list baru */
         while(tunjuk2 != NULL && cek == 0) {
+            /* 
+            * kondisi pertama menunjukan bahwa nilai yang paling kecil akan dimasukan ke paling awal list
+            * kondisi kedua menunjukan bahwa nilai yang kecil tetapi berada di tengah2 nilai akan dimasukan ke tengah list baru
+            * kondisi ketiga nilai paling besar akan dimasukan di akhir list
+             */
+            /* kondisi untuk urutan secara ascending */
             if(strcmp(urutanMenu, "asc") == 0) {
                 if(tunjuk1 -> kontainer.rating < tunjuk2 -> kontainer.rating && posisi == 1) {
                     addFirst(tunjuk1 -> kontainer.nama, tunjuk1 -> kontainer.harga, tunjuk1 -> kontainer.rating, L2);
@@ -90,7 +120,9 @@ void sortDinamyc(list L1, list *L2, char urutanMenu[]) {
                     addLast(tunjuk1 -> kontainer.nama, tunjuk1 -> kontainer.harga, tunjuk1 -> kontainer.rating, L2);
                     cek = 1;
                 }
-            }else {
+            }
+            /* kondisi untuk urutan secara descending */
+            else {
                 if(tunjuk1 -> kontainer.rating > tunjuk2 -> kontainer.rating && posisi == 1) {
                     addFirst(tunjuk1 -> kontainer.nama, tunjuk1 -> kontainer.harga, tunjuk1 -> kontainer.rating, L2);
                     cek = 1;
@@ -104,6 +136,7 @@ void sortDinamyc(list L1, list *L2, char urutanMenu[]) {
             }
 
             if(posisi > 1) {
+                /* sebagai penunjuk untuk elemen yang akan dimasukan di tengah list */
                 prev = prev -> next;
             }
                 posisi++;
@@ -174,11 +207,15 @@ int dapatDibeli(list *L, int banyakUang) {
     elemen* tunjuk;
     tunjuk = (*L).first;
 
+    /* kondisi jika banyak uang kurang dari harga makanan */
     if(banyakUang > tunjuk -> kontainer.harga) {    
-        while(tunjuk != NULL) {
+        while(tunjuk != NULL) {     // perulangan untuk list
+            /* kondisi untuk pengurangan banyakuang dengan harga makanan */
             if(banyakUang >= tunjuk -> kontainer.harga) {
                 banyakUang -= tunjuk -> kontainer.harga;
-            }else {
+            }
+            /* kondisi untuk mengurangi satu persatu makanan yang tidak cukup dibayar */
+            else {
                 delLast(L);
             }
             tunjuk = tunjuk -> next;
@@ -186,7 +223,6 @@ int dapatDibeli(list *L, int banyakUang) {
     }else {
         delAll(L);
     }
-
 
     delLast(L);
     return banyakUang;
