@@ -17,6 +17,7 @@ int main(int argc, char const *argv[])
     char konsentrasi[10];
 
     scanf("%s %s %s", &nama, &rumus, &konsentrasi);
+    printf("afawef\n");
     addFirst(nama, rumus, konsentrasi, &L);
     scanf("%s %s %s", &nama, &rumus, &konsentrasi);
     addLast(nama, rumus, konsentrasi, &L);
