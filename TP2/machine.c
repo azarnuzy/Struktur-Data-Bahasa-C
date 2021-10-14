@@ -1,31 +1,20 @@
-#include <stdio.h>
-#include <malloc.h>
-#include <string.h>
+#include "header.h"
 
-
-typedef struct {
-    char nama[50];
-    int harga;
-    int kode;
-}PC;
-
-typedef struct elmt *alamatelmt;
-typedef struct elmt {
-    PC kontainer;
-    alamatelmt prev;
-    alamatelmt next;
-}elemen;
-
-typedef struct {
-    elemen *first;
-    elemen *tail;
-}list;
-
+/* 
+*first sebagai penunjuk kepada elemen yang pertama
+*tail sebagai penunjuk kepada elemen paling akhir
+*next sebagai penunjuk dari elemen selanjutnya 
+*NULL sebagai nilai awal dari first
+ */
 void createList (list *L) {
     (*L).first = NULL;
     (*L).tail = NULL;
 }
 
+/* 
+*hasil sebagai nilai kembali dari elemen yang tersedia di dalam list
+*bantu sebagai kondisi dari banyaknya elemen yang ada pada list
+ */
 int countElement (list L) {
     int hasil = 0;
     if(L.first != NULL) {
@@ -35,7 +24,7 @@ int countElement (list L) {
         /* inisialisasi */
         bantu = L.first;
 
-        while (bantu != NULL) {
+        while (bantu != NULL) {     //perulangan untuk menghitung banyaknya element
             /* proses */
             hasil = hasil + 1;
             /* iterasi */
@@ -46,16 +35,32 @@ int countElement (list L) {
     return hasil;
 }
 
+/* 
+*temp sebagai variabel untuk menampung nilai sementara dari kontainer x (kotnainer yang akan ditukar)
+*x dan y = kontainer yang akan dilakukan pertukaran 
+ */
 void swap(elemen* x, elemen* y) {
     PC temp = x->kontainer;
     x->kontainer = y->kontainer;
     y->kontainer = temp;
 }
 
+/* 
+*metode1 = pengurutan dilihat dari harga atau kode barang
+*metode2 = pengurutan dilihat dari yang terbesar atau terkecil
+*tunjuk1 = sebagai variabel untuk menunjuk list pada perulangan pertama
+*tunjuk2 = sebagai variabel untuk menunjuk list pada perulangan yang kedua
+ */
 void multiDynamicSortingList(list *L, char metode1[], char metode2[]) {
     elemen *tunjuk1 = L->first, *tunjuk2;
+    //perulangan pada list dimulai dari awal
     for(tunjuk1 = L->first; tunjuk1 != NULL;tunjuk1 =  tunjuk1 -> next) {
+        //perulangan pada list dimulai dari tunjuk1 sebagai awal
         for(tunjuk2 = tunjuk1 -> next; tunjuk2 != NULL;tunjuk2 =  tunjuk2 -> next) {
+            /* 
+            *pengkondisian jika pengurutan dilakukan dengan melihat Harga atau kode
+            *pengkondisian jika pengurutan dilakukan dengan ascending atau descending
+             */
             if(strcmp(metode1, "H") == 0) {
                 if(strcmp(metode2, "Asc") == 0) {
                     if(tunjuk1->kontainer.harga > tunjuk2->kontainer.harga) {
@@ -81,14 +86,17 @@ void multiDynamicSortingList(list *L, char metode1[], char metode2[]) {
         }
     }
 }
-
+/* 
+*baru sebagai pointer bertipe elemen dan beralokasikan memory dan di paksa menjadi pointer melalui casting dari memory alokasi elemen
+ */
 void addFirst (char nama[], int harga, int kode, list *L) {
     elemen* baru;
     baru = (elemen*) malloc (sizeof (elemen));
+    //memasukan nilai dari input
     strcpy(baru->kontainer.nama, nama);
     baru->kontainer.harga = harga;
     baru->kontainer.kode = kode;
-
+    //kondisi untuk penambahan dengan kondisi list kosong dan banyak elemen
     if((*L).first == NULL) {
         baru->prev = NULL;
         baru->next = NULL;
@@ -98,19 +106,24 @@ void addFirst (char nama[], int harga, int kode, list *L) {
         baru->prev = NULL;
         (*L).first->prev = baru;
     }
-
+    //menjadikan first sebagai nilai baru
     (*L).first = baru;
     baru = NULL;
 }
 
+/* =
+*prev sebagai index dari nilai sebelum ditambahkan nilai yang baru
+*before sebagai elemen yang terletak sebelum elemen baru ditambahkan
+ */
 void addAfter(elemen* before, char nama[], int harga, int kode, list *L) {
     if(before != NULL) {
         elemen* baru;
         baru = (elemen*) malloc (sizeof (elemen));
+        //memasukan nilai dari input
         strcpy(baru->kontainer.nama, nama);
         baru->kontainer.harga = harga;
         baru->kontainer.kode = kode;
-
+        //kondisi  dari elemen sebelum adalah terakhir dan elemen sebelum di tengah
         if(before->next == NULL) {
             baru->next = NULL;
             (*L).tail = baru;
@@ -134,8 +147,11 @@ void addLast (char nama[], int harga, int kode, list *L) {
         addAfter((*L).tail, nama, harga, kode, L);
     }
 }
-
+/* 
+*hapus sebagai index untuk elemen yang dihapus
+ */
 void delFirst (list *L) {
+    //kondisi jika terdapat satu elemen dan jika banyak elemen
     if((*L).first != NULL) {
         elemen* hapus = (*L).first;
         if(countElement(*L) == 1) {
@@ -153,6 +169,7 @@ void delFirst (list *L) {
 void delAfter(elemen* before, list *L) {
     if(before != NULL) {
         elemen* hapus = before->next;
+        //kondisi jika yang dihapus paling belakang dan jika yang dihapus di tengah
         if(hapus != NULL) {
             if(hapus->next == NULL) {
                 before->next = NULL;
@@ -207,32 +224,4 @@ void printElement(list L) {
         printf(" Loh kok gaada:(\n");
         printf("=================\n");
     }
-}
-int main(int argc, char const *argv[])
-{
-    list L;
-    char nama[50];
-    int harga, kode;
-    char metode1[10], metode2[10];
-
-    createList(&L);
-
-    do {
-        scanf("%s", &nama);
-        if(strcmp(nama, "---") != 0) {
-            scanf("%d %d", &harga, &kode);
-            if(kode % 2 != 1) {
-                addLast(nama, harga, kode, &L);
-            }
-        }
-    }while(strcmp(nama, "---") != 0);
-
-    scanf("%s %s", &metode1, &metode2);
-
-    if(countElement(L) > 0) {
-        multiDynamicSortingList(&L, metode1, metode2);
-    }
-
-    printElement(L);
-    return 0;
 }
