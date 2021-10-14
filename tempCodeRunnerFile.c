@@ -1,1 +1,1 @@
-count
+printf("%d %d\n", tunjuk->kontainer.panjangA, tunjuk2->kontainer.panjangA);
