@@ -1,38 +1,4 @@
-#include <stdio.h>
-#include <malloc.h>
-#include <string.h>
-
-typedef struct
-{
-    char nim[10];
-    char nama[50];
-} mahasiswa;
-
-typedef struct
-{
-    char kode[10];
-    char nilai[2];
-} matkul;
-
-typedef struct eklm *alamatekolom;
-typedef struct eklm
-{
-    matkul kontainer_kol;
-    alamatekolom next_kol;
-} eKolom;
-
-typedef struct ebr *alamtebaris;
-typedef struct ebr
-{
-    mahasiswa kontainer;
-    eKolom *col;
-    alamtebaris next;
-} eBaris;
-
-typedef struct
-{
-    eBaris *first;
-} list;
+#include "header.h"
 
 void createList(list *L)
 {
@@ -83,12 +49,11 @@ int countElementK(eBaris L)
     return hasil;
 }
 
-void addFirstB(char nim[], char nama[], list *L)
+void addFirstB(int angkaPembagi, list *L)
 {
     eBaris *baru;
     baru = (eBaris *)malloc(sizeof(eBaris));
-    strcpy(baru->kontainer.nim, nim);
-    strcpy(baru->kontainer.nama, nama);
+    baru->kontainer.angkaPembagi = angkaPembagi;
     baru->col = NULL;
     if ((*L).first == NULL)
     {
@@ -103,12 +68,11 @@ void addFirstB(char nim[], char nama[], list *L)
     baru = NULL;
 }
 
-void addFirstK(char kode[], char nilai[], eBaris *L)
+void addFirstK(int angkaDibagi, eBaris *L)
 {
     eKolom *baru;
     baru = (eKolom *)malloc(sizeof(eKolom));
-    strcpy(baru->kontainer_kol.kode, kode);
-    strcpy(baru->kontainer_kol.nilai, nilai);
+    baru->kontainer_kol.angkaDibagi = angkaDibagi;
     if ((*L).col == NULL)
     {
         baru->next_kol = NULL;
@@ -122,12 +86,11 @@ void addFirstK(char kode[], char nilai[], eBaris *L)
     baru = NULL;
 }
 
-void addAfterB(eBaris *prev, char nim[], char nama[])
+void addAfterB(eBaris *prev, int angkaPembagi)
 {
     eBaris *baru;
     baru = (eBaris *)malloc(sizeof(eBaris));
-    strcpy(baru->kontainer.nim, nim);
-    strcpy(baru->kontainer.nama, nama);
+    baru->kontainer.angkaPembagi = angkaPembagi;
     baru->col = NULL;
     if (prev->next == NULL)
     {
@@ -142,12 +105,11 @@ void addAfterB(eBaris *prev, char nim[], char nama[])
     baru = NULL;
 }
 
-void addAfterK(eKolom *prev, char kode[], char nilai[])
+void addAfterK(eKolom *prev, int angkaDibagi)
 {
     eKolom *baru;
     baru = (eKolom *)malloc(sizeof(eKolom));
-    strcpy(baru->kontainer_kol.kode, kode);
-    strcpy(baru->kontainer_kol.nilai, nilai);
+    baru->kontainer_kol.angkaDibagi = angkaDibagi;
     if (prev->next_kol == NULL)
     {
         baru->next_kol = NULL;
@@ -161,12 +123,12 @@ void addAfterK(eKolom *prev, char kode[], char nilai[])
     baru = NULL;
 }
 
-void addLastB(char nim[], char nama[], list *L)
+void addLastB(int angkaPembagi, list *L)
 {
     if ((*L).first == NULL)
     {
         /* jika list adalah list kosong */
-        addFirstB(nim, nama, L);
+        addFirstB(angkaPembagi, L);
     }
     else
     {
@@ -178,16 +140,16 @@ void addLastB(char nim[], char nama[], list *L)
             last = last->next;
         }
 
-        addAfterB(last, nim, nama);
+        addAfterB(last, angkaPembagi);
     }
 }
 
-void addLastK(char kode[], char nilai[], eBaris *L)
+void addLastK(int angkaDibagi, eBaris *L)
 {
     if ((*L).col == NULL)
     {
         /* jika list adalah list kosong */
-        addFirstK(kode, nilai, L);
+        addFirstK(angkaDibagi, L);
     }
     else
     {
@@ -199,16 +161,15 @@ void addLastK(char kode[], char nilai[], eBaris *L)
             /* iterasi */
             last = last->next_kol;
         }
-        addAfterK(last, kode, nilai);
+        addAfterK(last, angkaDibagi);
     }
 }
 
 void delFirstK(eBaris *L)
 {
-
     if ((*L).col != NULL)
     {
-        /*jika list bukan list kosong*/
+        /* jika list bukan list kosong */
         eKolom *hapus = (*L).col;
         if (countElementK(*L) == 1)
         {
@@ -225,7 +186,6 @@ void delFirstK(eBaris *L)
 
 void delAfterK(eKolom *prev)
 {
-
     eKolom *hapus = prev->next_kol;
     if (hapus != NULL)
     {
@@ -244,7 +204,6 @@ void delAfterK(eKolom *prev)
 
 void delLastK(eBaris *L)
 {
-
     if ((*L).col != NULL)
     {
         /*jika list tidak kosong*/
@@ -272,12 +231,9 @@ void delLastK(eBaris *L)
 
 void delAllK(eBaris *L)
 {
-
     if (countElementK(*L) != 0)
     {
-
         int i;
-
         for (i = countElementK(*L); i >= 1; i--)
         {
             /*proses menghapus elemen list*/
@@ -292,7 +248,6 @@ void delFirstB(list *L)
     {
         /*jika list bukan list kosong*/
         eBaris *hapus = (*L).first;
-
         if (hapus->col != NULL)
         {
             //menghapus semua elemen kolom jika ada
@@ -343,13 +298,13 @@ void delAfterB(eBaris *prev)
 
 void delLastB(list *L)
 {
-
     if ((*L).first != NULL)
     {
         /*jika list tidak kosong*/
         if (countElementB(*L) == 1)
         {
-            /*list terdiri dari satu elemen*/
+            /*list terdiri dari satu
+elemen*/
             delFirstB(L);
         }
         else
@@ -367,14 +322,12 @@ void delLastB(list *L)
         }
     }
 }
+
 void delAllB(list *L)
 {
-
     if (countElementB(*L) != 0)
     {
-
         int i;
-
         for (i = countElementB(*L); i >= 1; i--)
         {
             /*proses menghapus elemen list*/
@@ -394,22 +347,13 @@ void printElement(list L)
         while (bantu != NULL)
         {
             /*proses*/
-            printf("elemen ke : %d\n", i);
-            printf("nim : %s\n",
-                   bantu->kontainer.nim);
-            printf("nama : %s\n",
-                   bantu->kontainer.nama);
+            printf("%d\n", bantu->kontainer.angkaPembagi);
             eKolom *eCol = bantu->col;
             while (eCol != NULL)
             {
-                printf("kode kuliah : %s\n",
-                       eCol->kontainer_kol.kode);
-                printf("nilai : %s\n",
-                       eCol->kontainer_kol.nilai);
+                printf("- %d\n", eCol->kontainer_kol.angkaDibagi);
                 eCol = eCol->next_kol;
             }
-            printf("------------\n");
-            /*iterasi*/
             bantu = bantu->next;
             i = i + 1;
         }
@@ -421,26 +365,48 @@ void printElement(list L)
     }
 }
 
-int main()
-{
-    list L;
-    createList(&L);
-    printElement(L);
-    printf("=================\n");
-    addFirstB("1", "Orang_1", &L);
-    addFirstK("IF40K1", "A", L.first);
-    addAfterK(L.first->col, "IF40Z1", "A");
-    addLastK("IF40Z2", "A", L.first);
-    addAfterB(L.first, "2", "Orang_2");
-    addFirstK("TI5141", "A", L.first->next);
-    addLastK("IF5021", "A", L.first->next);
-    addLastB("3", "Orang_3", &L);
-    addFirstK("IF5321", "A", L.first->next->next);
-    delAfterB(L.first->next);
-    printElement(L);
-    printf("=================\n");
-    delAllB(&L);
-    printElement(L);
-    printf("=================\n");
-    return 0;
+void createRowNumber(list *L) {
+    int i;
+    for(i=1; i<=9; i++) {
+        addLastB(i, L);
+    }
+}
+
+void groupRowNumber(int angkaDibagi, list *L) {
+    int i;
+    eBaris *tunjuk = L->first;
+
+    if(angkaDibagi == 1) {
+        addLastK(1, tunjuk);
+    }
+
+    tunjuk = tunjuk->next;
+
+    for(i=2; i<=9; i++) {
+        if(angkaDibagi % i == 0) {
+            addLastK(angkaDibagi, tunjuk);
+        }
+
+        tunjuk = tunjuk->next;
+    }
+}
+
+void delEmptyCol(list *L) {
+    int i;
+    eBaris *tunjuk;
+    eBaris *tunjukPrev;
+    tunjuk = L->first;
+    for(i=1; i<=9; i++) {
+        eKolom *bantu;
+        bantu = tunjuk->col;
+        if(bantu == NULL && i == 1) {
+            delFirstB(L);
+        }else if(bantu == NULL && i > 1) {
+            tunjuk = tunjuk->next;
+            delAfterB(tunjukPrev);
+        }else{
+            tunjukPrev = tunjuk;
+            tunjuk = tunjuk->next;
+        }
+    }
 }
