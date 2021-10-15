@@ -17,7 +17,7 @@ int countElement(list L) {
     return hasil;
 }
 
-void addFirst(int angka, list *L) {
+void addFirst(float angka, list *L) {
     elemen* baru;
     baru = (elemen*) malloc (sizeof (elemen));
     baru->kontainer.angka = angka;
@@ -30,7 +30,7 @@ void addFirst(int angka, list *L) {
     baru = NULL;
 }
 
-void addAfter(elemen* prev, int angka, list *L) {
+void addAfter(elemen* prev, float angka, list *L) {
     elemen *baru;
     baru = (elemen*) malloc (sizeof (elemen));
     baru->kontainer.angka = angka;
@@ -44,7 +44,7 @@ void addAfter(elemen* prev, int angka, list *L) {
     baru = NULL;
 }
 
-void addLast(int angka, list *L) {
+void addLast(float angka, list *L) {
     if((*L).first ==NULL) {
         addFirst(angka, L);
     }else {
@@ -105,7 +105,7 @@ void printElement(list L) {
         int i = 1;
 
         while(tunjuk != NULL) {
-            printf("%d\n",tunjuk->kontainer.angka);
+            printf("%.2f\n",tunjuk->kontainer.angka);
             tunjuk = tunjuk->next;
             i++;
         }
@@ -120,5 +120,36 @@ void delAll(list *L) {
         for(i=countElement(*L); i>=1; i--) {
             delLast(L);
         }
+    }
+}
+
+void swap(elemen* a, elemen* b ) {
+    stringHuruf temp = a->kontainer;
+    a->kontainer = b->kontainer;
+    b->kontainer = temp;
+}
+
+void sortingList(list *L) {
+    elemen *tunjuk = L->first;
+    while(tunjuk != NULL) {
+        elemen* tunjuk2 = tunjuk->next;
+        if(tunjuk2 != NULL) {
+            while(tunjuk2 != NULL) {
+                int bil1, bil2;
+                int bagi1, bagi2;
+                bil1 = (tunjuk->kontainer.angka * 100); 
+                bagi1 = bil1 / 100;
+                bil1 = bil1 % (bagi1 * 100);
+                bil2 = (tunjuk2->kontainer.angka * 100); 
+                bagi2 = bil2 / 100;
+                bil2 = bil2 % (bagi2 * 100);
+                if(bil1 > bil2) {
+                    swap(tunjuk, tunjuk2);
+                }
+                tunjuk2 = tunjuk2->next;
+            }
+        }
+
+        tunjuk = tunjuk->next;
     }
 }

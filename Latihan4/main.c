@@ -7,12 +7,12 @@ int main(int argc, char const *argv[])
     int n;
     scanf("%d", &n);
     int i;
-    int angka;
-    int a;
+    float angka;
     for(i=0; i<n; i++) {
-        scanf(" %d", &angka);
-        addFirst(angka, &L);
+        scanf(" %f", &angka);
+        addLast(angka, &L);
     }
+    sortingList(&L);
     printElement(L);
     return 0;
 }
