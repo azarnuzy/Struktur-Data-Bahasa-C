@@ -1,43 +1,62 @@
-#include <stdio.h>
-#include <malloc.h>
+#include "header.h"
 
-typedef struct smp *alamatsimpul;
-typedef struct smp
-{
-    char kontainer;
-    alamatsimpul sibling;
-    alamatsimpul child;
-} simpul;
-
-typedef struct
-{
-    simpul *root;
-} tree;
-
-void makeTree(char c, tree *T)
+void makeTree(char c[], tree *T)
 {
     simpul *node;
     node = (simpul *)malloc(sizeof(simpul));
-    node->kontainer = c;
+    strcpy(node->kontainer, c);
     node->sibling = NULL;
     node->child = NULL;
     (*T).root = node;
 }
 
-void addChild(char c, simpul *root)
+data hasilSplit(char input[], int mode)
+{
+    data hasil;
+    int j = 0;
+    char *splitInput = strtok(input, "#");
+    strcpy(hasil.nodeParent, splitInput);
+
+    while (splitInput != NULL)
+    {
+        if (j == 1)
+        {
+            strcpy(hasil.nodeChild, splitInput);
+        }
+        else if (j == 2)
+        {
+            if (strcmp(splitInput, "-1") != 0)
+            {
+                hasil.jumlahKorban = atoi(splitInput);
+            }
+            else
+            {
+                hasil.jumlahKorban = 0;
+            }
+        }
+        splitInput = strtok(NULL, "#");
+
+        j++;
+    }
+
+    return hasil;
+}
+
+void addChild(char c[], int jumlahKorban, simpul *root)
 {
     if (root != NULL)
     {
         /* jika simpul root tidak kosong, berarti dapat ditambahkan simpul anak*/
         simpul *baru;
         baru = (simpul *)malloc(sizeof(simpul));
-        baru->kontainer = c;
+
+        strcpy(baru->kontainer, c);
+        baru->jumlahKorban = jumlahKorban;
         baru->child = NULL;
 
         if (root->child == NULL)
         {
             /* jika simpul root belum memiliki simpul anak maka simpul baru menjadi anak pertama */
-
             baru->sibling = NULL;
             root->child = baru;
         }
@@ -100,7 +119,7 @@ void delAll(simpul *root)
     }
 }
 
-void delChild(char c, simpul *root)
+void delChild(char c[], simpul *root)
 {
     if (root != NULL)
     {
@@ -193,12 +212,12 @@ void delChild(char c, simpul *root)
     }
 }
 
-simpul *findSimpul(char c, simpul *root)
+simpul *findSimpul(char c[], simpul *root)
 {
     simpul *hasil = NULL;
     if (root != NULL)
     {
-        if (root->kontainer == c)
+        if (strcmp(root->kontainer, c) == 0)
         {
             hasil = root;
         }
@@ -210,15 +229,12 @@ simpul *findSimpul(char c, simpul *root)
                 if (bantu->sibling == NULL)
                 {
                     /*jika memiliki satu simpul anak*/
-                    if (bantu->kontainer == c)
+                    if (strcmp(bantu->kontainer, c) == 0)
                     {
-
                         hasil = bantu;
                     }
-
                     else
                     {
-
                         hasil = findSimpul(c, bantu);
                     }
                 }
@@ -228,7 +244,7 @@ simpul *findSimpul(char c, simpul *root)
                     int ketemu = 0;
                     while ((bantu->sibling != root->child) && (ketemu == 0))
                     {
-                        if (bantu->kontainer == c)
+                        if (strcmp(bantu->kontainer, c) == 0)
                         {
                             hasil = bantu;
                             ketemu = 1;
@@ -236,20 +252,23 @@ simpul *findSimpul(char c, simpul *root)
                         else
                         {
                             hasil = findSimpul(c, bantu);
+                            if (hasil != NULL)
+                            {
+                                ketemu = 1;
+                            }
                             bantu = bantu->sibling;
                         }
                     }
                     /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
                     if (ketemu == 0)
                     {
-                        if (bantu->kontainer == c)
+                        if (strcmp(bantu->kontainer, c) == 0)
                         {
                             hasil = bantu;
                         }
                         else
                         {
-                            hasil =
-                                findSimpul(c, bantu);
+                            hasil = findSimpul(c, bantu);
                         }
                     }
                 }
@@ -263,7 +282,7 @@ void printTreePreOrder(simpul *root)
 {
     if (root != NULL)
     {
-        printf(" %s", root->kontainer);
+        printf(" %s====%d\n", root->kontainer, root->jumlahKorban);
         simpul *bantu = root->child;
         if (bantu != NULL)
         {
@@ -277,8 +296,7 @@ void printTreePreOrder(simpul *root)
                 /*jika memiliki banyak simpul anak*/
 
                 /*mencetak simpul anak*/
-                while (bantu->sibling !=
-                       root->child)
+                while (bantu->sibling != root->child)
                 {
                     printTreePreOrder(bantu);
                     bantu = bantu->sibling;
@@ -327,7 +345,7 @@ void copyTree(simpul *root1, simpul **root2)
     if (root1 != NULL)
     {
         (*root2) = (simpul *)malloc(sizeof(simpul));
-        (*root2)->kontainer = root1->kontainer;
+        strcpy((*root2)->kontainer, root1->kontainer);
         (*root2)->sibling = NULL;
         (*root2)->child = NULL;
         if (root1->child != NULL)
@@ -409,69 +427,4 @@ int isEqual(simpul *root1, simpul *root2)
         }
     }
     return hasil;
-}
-
-int main()
-{
-    tree T;
-    makeTree('A', &T);
-    addChild('B', T.root);
-    addChild('C', T.root);
-    addChild('D', T.root);
-    simpul *node = findSimpul('B', T.root);
-    if (node != NULL)
-    {
-        addChild('E', node);
-        addChild('F', node);
-    }
-    node = findSimpul('C', T.root);
-    if (node != NULL)
-    {
-        addChild('G', node);
-    }
-    node = findSimpul('D', T.root);
-    if (node != NULL)
-    {
-        addChild('H', node);
-        addChild('I', node);
-        addChild('J', node);
-    }
-
-    node = findSimpul('J', T.root);
-    if (node != NULL)
-    {
-        addChild('K', node);
-        addChild('L', node);
-        addChild('M', node);
-    }
-    printf("=================\n");
-    printf("preOrder\n");
-    printTreePreOrder(T.root);
-    printf("\n=================\n");
-    printf("postOrder\n");
-    printTreePostOrder(T.root);
-    printf("\n=================\n");
-    tree T2;
-    copyTree(T.root, &T2.root);
-    if (isEqual(T.root, T2.root) == 1)
-    {
-        printf("pohon sama\n");
-    }
-    else
-    {
-        printf("pohon tidak sama\n");
-    }
-    node = findSimpul('J', T.root);
-    if (node != NULL)
-    {
-        delChild('K', node);
-        delChild('L', node);
-        delChild('M', node);
-    }
-    printf("=================\n");
-    printf("preOrder setelah dihapus\n");
-    printTreePreOrder(T.root);
-    printf("\n=================\n");
-
-    return 0;
 }
