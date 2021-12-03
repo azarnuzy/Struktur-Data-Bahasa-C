@@ -66,37 +66,40 @@ void addChild(char c, simpul *root)
     }
 }
 
-void delAll(simpul *root)
-{
-    if (root != NULL)
+void delAll(simpul **root)
+{ //Dilakukan kalo emang siblingnya udah diatur, atau emang gapunya sibling
+    if ((*root) != NULL)
     {
         /* jika simpul root tidak kosong */
-        if (root->child != NULL)
+        if ((*root)->child != NULL)
         {
-            if (root->child->sibling == NULL)
+
+            if ((*root)->child->sibling == NULL)
             {
                 /* jika hanya memiliki satu simpul anak */
-                delAll(root->child);
-                free(root);
+
+                delAll(&(*root)->child);
+                free((*root)->child);
+                (*root)->child = NULL;
             }
             else
             {
                 simpul *bantu;
                 simpul *proses;
-                bantu = root->child;
-                while (bantu->sibling != root->child)
+                bantu = (*root)->child;
+                while (bantu->sibling != (*root)->child)
                 {
                     proses = bantu;
                     bantu = bantu->sibling;
-                    delAll(proses);
+                    delAll(&proses);
                 }
+                delAll(&bantu);
+                free((*root)->child);
+                (*root)->child = NULL;
             }
-            free(root);
         }
-        else
-        {
-            free(root);
-        }
+        free(*root);
+        *root = NULL;
     }
 }
 
@@ -112,7 +115,7 @@ void delChild(char c, simpul *root)
                 /*jika hanya mempunyai satu anak*/
                 if (root->child->kontainer == c)
                 {
-                    delAll(root->child);
+                    delAll(&root->child);
                     root->child = NULL;
                 }
                 else
@@ -182,7 +185,7 @@ void delChild(char c, simpul *root)
                             hapus->sibling = NULL;
                         }
                     }
-                    delAll(hapus);
+                    delAll(&hapus);
                 }
                 else
                 {
@@ -277,8 +280,7 @@ void printTreePreOrder(simpul *root)
                 /*jika memiliki banyak simpul anak*/
 
                 /*mencetak simpul anak*/
-                while (bantu->sibling !=
-                       root->child)
+                while (bantu->sibling != root->child)
                 {
                     printTreePreOrder(bantu);
                     bantu = bantu->sibling;
@@ -287,6 +289,10 @@ void printTreePreOrder(simpul *root)
                 printTreePreOrder(bantu);
             }
         }
+    }
+    else
+    {
+        printf("kosong");
     }
 }
 
@@ -470,6 +476,7 @@ int main()
     }
     printf("=================\n");
     printf("preOrder setelah dihapus\n");
+    delAll(&T.root);
     printTreePreOrder(T.root);
     printf("\n=================\n");
 

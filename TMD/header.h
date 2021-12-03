@@ -3,8 +3,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-int spaceCount[100];
-
 typedef struct
 {
     char nodeParent[100];
@@ -33,6 +31,7 @@ void delAll(simpul *root);
 void delChild(char c[], simpul *root);
 simpul *findSimpul(char c[], simpul *root);
 void printTreePreOrder(simpul *root);
-void printTreePostOrder(simpul *root);
+void countJumlahKorban(simpul *root);
+void printTreePostOrder(simpul *root, int *sumJmlKorban);
 void copyTree(simpul *root1, simpul **root2);
 int isEqual(simpul *root1, simpul *root2);

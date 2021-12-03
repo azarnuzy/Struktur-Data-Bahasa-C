@@ -282,7 +282,7 @@ void printTreePreOrder(simpul *root)
 {
     if (root != NULL)
     {
-        printf(" %s====%d\n", root->kontainer, root->jumlahKorban);
+        printf("|%s - %d\n", root->kontainer, root->jumlahKorban);
         simpul *bantu = root->child;
         if (bantu != NULL)
         {
@@ -308,9 +308,8 @@ void printTreePreOrder(simpul *root)
     }
 }
 
-void printTreePostOrder(simpul *root)
+void printTreePostOrder(simpul *root, int *sumJmlKorban)
 {
-
     if (root != NULL)
     {
         simpul *bantu = root->child;
@@ -320,23 +319,34 @@ void printTreePostOrder(simpul *root)
             if (bantu->sibling == NULL)
             {
                 /*jika memiliki satu simpul anak*/
-                printTreePostOrder(bantu);
+                printTreePostOrder(bantu, sumJmlKorban);
             }
             else
             {
                 /*jika memiliki banyak simpul anak*/
                 /*mencetak simpul anak*/
-                while (bantu->sibling !=
-                       root->child)
+                while (bantu->sibling != root->child)
                 {
-                    printTreePostOrder(bantu);
+                    printTreePostOrder(bantu, sumJmlKorban);
                     bantu = bantu->sibling;
                 }
                 /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
-                printTreePostOrder(bantu);
+                printTreePostOrder(bantu, sumJmlKorban);
             }
         }
-        printf(" %c ", root->kontainer);
+        if (root->sibling != NULL)
+        {
+            if (root->jumlahKorban != 0)
+            {
+                *sumJmlKorban = *sumJmlKorban + root->jumlahKorban;
+                printf("%d\n", *sumJmlKorban);
+            }
+        }
+        else
+        {
+
+            // printf("%s - %d - %s\n", root->kontainer, root->jumlahKorban, root->sibling);
+        }
     }
 }
 

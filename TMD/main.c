@@ -24,7 +24,6 @@ int main()
         else
         {
             rootNode = findSimpul(dataSplit.nodeParent, T.root);
-            // printf("%s****%s\n", rootNode->kontainer, dataSplit.nodeParent);
             if (rootNode != NULL)
             {
                 addChild(dataSplit.nodeChild, dataSplit.jumlahKorban, rootNode);
@@ -33,7 +32,8 @@ int main()
     }
 
     rootNode = findSimpul("Sidoarjo", T.root);
-    // printf("%s*****%s\n", rootNode->child, rootNode->child->sibling);
-    printTreePreOrder(T.root);
+    int sumJmlKorban = 0;
+    int ranting = 0;
+    printTreePostOrder(T.root, &sumJmlKorban);
     return 0;
 }
