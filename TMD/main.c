@@ -18,7 +18,7 @@ int main()
 
         if (strcmp(dataSplit.nodeParent, "null") == 0)
         {
-            makeTree(dataSplit.nodeChild, &T);
+            makeTree(dataSplit, &T);
             strcpy(akarSimpul, dataSplit.nodeChild);
         }
         else
@@ -26,14 +26,14 @@ int main()
             rootNode = findSimpul(dataSplit.nodeParent, T.root);
             if (rootNode != NULL)
             {
-                addChild(dataSplit.nodeChild, dataSplit.jumlahKorban, rootNode);
+                addChild(dataSplit, rootNode, T.root);
             }
         }
     }
 
-    rootNode = findSimpul("Sidoarjo", T.root);
     int sumJmlKorban = 0;
     int ranting = 0;
-    printTreePostOrder(T.root, &sumJmlKorban);
+    printTreePreOrder(T.root);
+    // printTreePostOrder(T.root, &sumJmlKorban);
     return 0;
 }

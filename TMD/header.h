@@ -14,7 +14,9 @@ typedef struct smp *alamatsimpul;
 typedef struct smp
 {
     char kontainer[100];
+    char parent[100];
     int jumlahKorban;
+    int depth;
     alamatsimpul sibling;
     alamatsimpul child;
 } simpul;
@@ -24,10 +26,10 @@ typedef struct
     simpul *root;
 } tree;
 
-void makeTree(char c[], tree *T);
+void makeTree(data dataSplit, tree *T);
 data hasilSplit(char input[], int mode);
-void addChild(char c[], int jumlahKorban, simpul *root);
-void delAll(simpul *root);
+void addChild(data dataSplit, simpul *root, simpul *akar);
+void delAll(simpul **root);
 void delChild(char c[], simpul *root);
 simpul *findSimpul(char c[], simpul *root);
 void printTreePreOrder(simpul *root);
