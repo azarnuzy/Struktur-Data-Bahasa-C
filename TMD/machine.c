@@ -317,7 +317,7 @@ void printTreePreOrder(simpul *root)
     }
 }
 
-void printTreePostOrder(simpul *root, int *sumJmlKorban, int depth)
+void printTreePostOrder(simpul *root, int *sumJmlKorban)
 {
     if (root != NULL)
     {
@@ -327,7 +327,7 @@ void printTreePostOrder(simpul *root, int *sumJmlKorban, int depth)
             if (bantu->sibling == NULL)
             {
                 /*jika memiliki satu simpul anak*/
-                printTreePostOrder(bantu, sumJmlKorban, depth);
+                printTreePostOrder(bantu, sumJmlKorban);
             }
             else
             {
@@ -335,11 +335,11 @@ void printTreePostOrder(simpul *root, int *sumJmlKorban, int depth)
                 /*mencetak simpul anak*/
                 while (bantu->sibling != root->child)
                 {
-                    printTreePostOrder(bantu, sumJmlKorban, depth);
+                    printTreePostOrder(bantu, sumJmlKorban);
                     bantu = bantu->sibling;
                 }
                 /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
-                printTreePostOrder(bantu, sumJmlKorban, depth);
+                printTreePostOrder(bantu, sumJmlKorban);
             }
         }
 
@@ -494,11 +494,41 @@ void sumJmlInNode(simpul *root, int *sumJmlKorban)
     }
 }
 
-void setSumJmltoZero(int n)
+int countSibling(simpul *root)
 {
-    int i;
-    for (i = 0; i < n; i++)
+}
+
+void sortingNode(simpul *root)
+{
+    simpul *current = root->child;
+    simpul *prev = NULL;
+    simpul *n;
+    while (current != NULL && current->sibling != NULL && current->sibling != root->child)
     {
-        sumJmlNode[i] = 0;
+        if (current->jumlahKorban > current->sibling->jumlahKorban)
+        {
+            if (prev == NULL)
+            {
+                n = current->sibling;
+                current->sibling = n->sibling;
+                n->sibling = current;
+                prev = n;
+                root->child = prev;
+            }
+            else
+            {
+                n = current->sibling;
+                prev->sibling = n;
+                current->sibling = n->sibling;
+                n->sibling = current;
+                prev = n;
+            }
+        }
+        else
+        {
+            n = current->sibling;
+            prev = current;
+            current = n;
+        }
     }
 }

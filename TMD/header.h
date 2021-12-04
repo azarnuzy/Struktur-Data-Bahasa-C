@@ -3,9 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-int sumJmlNode[100];
 int tempDepth;
-int itr;
 
 typedef struct
 {
@@ -39,7 +37,6 @@ void delChild(char c[], simpul *root);
 simpul *findSimpul(char c[], simpul *root);
 void printTreePreOrder(simpul *root);
 void countJumlahKorban(simpul *root);
-void printTreePostOrder(simpul *root, int *sumJmlKorban, int depth);
+void printTreePostOrder(simpul *root, int *sumJmlKorban);
 void copyTree(simpul *root1, simpul **root2);
 int isEqual(simpul *root1, simpul *root2);
-void setSumJmltoZero(int n);

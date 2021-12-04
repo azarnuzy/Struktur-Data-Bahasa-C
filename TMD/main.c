@@ -35,8 +35,7 @@ int main()
     int ranting = 0;
     tree T2;
     // printTreePreOrder(T.root);
-    itr = 0;
-    printTreePostOrder(T.root, &sumJmlKorban, tempDepth);
+    printTreePostOrder(T.root, &sumJmlKorban);
     printTreePreOrder(T.root);
     return 0;
 }
