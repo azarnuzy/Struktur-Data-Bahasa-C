@@ -71,21 +71,55 @@ void addChild(data dataSplit, simpul *root, simpul *akar)
             if (root->child->sibling == NULL)
             {
                 /* jika simpul root memiliki anak yang belum memiliki saudara, maka simpul baru menjadi anak kedua */
-                baru->sibling = root->child;
-                root->child->sibling = baru;
+                simpul *temp = root->child;
+                /* kondisi jika angka pertama lebih kecil dengan angka yang dimasukkan */
+                if (root->child->jumlahKorban < baru->jumlahKorban)
+                {
+                    temp = root->child;
+                    root->child = baru;
+                    baru->sibling = temp;
+                }
+                /* kondisi jika angka pertama lebih besar dengan angka yang dimasukan */
+                else
+                {
+                    baru->sibling = root->child;
+                    root->child->sibling = baru;
+                }
             }
             else
             {
                 simpul *last = root->child;
+                simpul *tempNode = last;
+                int ketemu = 0;
                 /* mencari simpul anak terakhir karena akan dikaitkan dengan simpul baru sebagai simpul anak terakhir yang baru, 
                 simpul anak terakhir adalah yang memiliki sibling simpul anak pertama, maka selama belum sampai pada simpul anak
                  terakhir, penunjuk last akan berjalan ke simpul anak berikutnya */
                 while (last->sibling != root->child)
                 {
+                    if (last->jumlahKorban < baru->jumlahKorban && ketemu == 0)
+                    {
+                        ketemu = 1;
+                    }
                     last = last->sibling;
+                    if (ketemu == 0)
+                    {
+                        tempNode = last;
+                    }
                 }
-                baru->sibling = root->child;
-                last->sibling = baru;
+
+                //kondisi addLast
+                if (ketemu == 0)
+                {
+                    baru->sibling = root->child;
+                    last->sibling = baru;
+                }
+                //kondisi addFirst
+                else if (ketemu == 1 && strcmp(tempNode->parent, root->kontainer) == 0)
+                {
+                    simpul *temp = root->child;
+                    root->child = baru;
+                    root->child->sibling = temp;
+                }
             }
         }
     }
@@ -156,7 +190,7 @@ void delChild(char c[], simpul *root)
                 int ketemu = 0;
                 while ((hapus->sibling != root->child) && (ketemu == 0))
                 {
-                    if (strcmp(hapus->kontainer, c))
+                    if (strcmp(hapus->kontainer, c) == 0)
                     {
                         ketemu = 1;
                     }
@@ -167,7 +201,7 @@ void delChild(char c[], simpul *root)
                     }
                 }
                 /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
-                if ((ketemu == 0) && (strcmp(hapus->kontainer, c)))
+                if ((ketemu == 0) && (strcmp(hapus->kontainer, c) == 0))
                 {
                     ketemu = 1;
                 }
@@ -336,10 +370,19 @@ void printTreePostOrder(simpul *root, int *sumJmlKorban)
                 while (bantu->sibling != root->child)
                 {
                     printTreePostOrder(bantu, sumJmlKorban);
+                    itr++;
                     bantu = bantu->sibling;
                 }
                 /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
                 printTreePostOrder(bantu, sumJmlKorban);
+                itr++;
+                if (bantu->jumlahKorban != 0)
+                {
+                    simpul *tempFindNode = findSimpul(bantu->parent, root);
+                    sortingNode(tempFindNode, itr);
+                }
+                itr = 0;
+                printf("%s===%s\n", bantu->kontainer, bantu->parent);
             }
         }
 
@@ -464,51 +507,21 @@ int isEqual(simpul *root1, simpul *root2)
     return hasil;
 }
 
-void sumJmlInNode(simpul *root, int *sumJmlKorban)
+/* void sortingNode(simpul *root, int iterasi)
 {
-    if (root != NULL)
-    {
-        simpul *bantu = root->child;
 
-        if (bantu != NULL)
-        {
-            if (bantu->sibling == NULL)
-            {
-                /*jika memiliki satu simpul anak*/
-                sumJmlInNode(bantu, sumJmlKorban);
-            }
-            else
-            {
-                /*jika memiliki banyak simpul anak*/
-                /*mencetak simpul anak*/
-                while (bantu->sibling != root->child)
-                {
-                    sumJmlInNode(bantu, sumJmlKorban);
-                    bantu = bantu->sibling;
-                }
-                /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
-                sumJmlInNode(bantu, sumJmlKorban);
-                simpul *tempJml = findSimpul(bantu->parent, root);
-            }
-        }
-    }
-}
-
-int countSibling(simpul *root)
-{
-}
-
-void sortingNode(simpul *root)
-{
+    // printf("%d %s-----\n", iterasi, root->child->kontainer);
     simpul *current = root->child;
     simpul *prev = NULL;
-    simpul *n;
+
+    printf("%d %d\n", current->jumlahKorban, current->sibling->jumlahKorban);
     while (current != NULL && current->sibling != NULL && current->sibling != root->child)
     {
-        if (current->jumlahKorban > current->sibling->jumlahKorban)
+        if (current->jumlahKorban < current->sibling->jumlahKorban)
         {
             if (prev == NULL)
             {
+                simpul *n;
                 n = current->sibling;
                 current->sibling = n->sibling;
                 n->sibling = current;
@@ -517,6 +530,7 @@ void sortingNode(simpul *root)
             }
             else
             {
+                simpul *n;
                 n = current->sibling;
                 prev->sibling = n;
                 current->sibling = n->sibling;
@@ -526,9 +540,8 @@ void sortingNode(simpul *root)
         }
         else
         {
-            n = current->sibling;
             prev = current;
             current = n;
         }
     }
-}
+} */

@@ -36,7 +36,51 @@ int length(node *head)
     }
     return count;
 }
+node *bubble_sort_LinkedList_itr(node *head)
+{
+    int n = len(head) - 1;
 
+    while (n--)
+
+    {
+        node *prev = NULL;
+        node *cur = head;
+        while (cur->next != NULL)
+        {
+            if (cur->data >= cur->next->data)
+            {
+
+                if (prev == NULL)
+                {
+                    //first node
+                    node *nxt = cur->next;
+                    cur->next = nxt->next;
+                    nxt->next = cur;
+                    prev = nxt;
+                    head = prev;
+                }
+
+                else
+                {
+
+                    node *nxt = cur->next;
+                    prev->next = nxt;
+                    cur->next = nxt->next;
+                    nxt->next = cur;
+                    prev = nxt;
+                }
+            }
+            else
+            {
+
+                prev = cur;
+                cur = cur->next;
+            }
+        }
+    }
+
+    return head;
+}
 void BubbleSort(node *head)
 {
     int n = length(head);
