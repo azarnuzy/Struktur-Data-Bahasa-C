@@ -57,6 +57,7 @@ void addChild(data dataSplit, simpul *root, simpul *akar)
         strcpy(baru->parent, dataSplit.nodeParent);
         baru->jumlahKorban = dataSplit.jumlahKorban;
         baru->depth = bantu->depth + 1;
+        tempDepth = baru->depth;
         baru->child = NULL;
 
         if (root->child == NULL)
@@ -316,18 +317,17 @@ void printTreePreOrder(simpul *root)
     }
 }
 
-void printTreePostOrder(simpul *root, int *sumJmlKorban)
+void printTreePostOrder(simpul *root, int *sumJmlKorban, int depth)
 {
     if (root != NULL)
     {
         simpul *bantu = root->child;
-
         if (bantu != NULL)
         {
             if (bantu->sibling == NULL)
             {
                 /*jika memiliki satu simpul anak*/
-                printTreePostOrder(bantu, sumJmlKorban);
+                printTreePostOrder(bantu, sumJmlKorban, depth);
             }
             else
             {
@@ -335,26 +335,43 @@ void printTreePostOrder(simpul *root, int *sumJmlKorban)
                 /*mencetak simpul anak*/
                 while (bantu->sibling != root->child)
                 {
-                    printTreePostOrder(bantu, sumJmlKorban);
+                    printTreePostOrder(bantu, sumJmlKorban, depth);
                     bantu = bantu->sibling;
                 }
                 /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
-                printTreePostOrder(bantu, sumJmlKorban);
+                printTreePostOrder(bantu, sumJmlKorban, depth);
             }
         }
-        if (root->sibling != NULL)
-        {
-            if (root->jumlahKorban != 0)
-            {
-                *sumJmlKorban = *sumJmlKorban + root->jumlahKorban;
-                printf("%d\n", *sumJmlKorban);
-            }
-        }
-        else
-        {
 
-            // printf("%s - %d - %s\n", root->kontainer, root->jumlahKorban, root->sibling);
+        simpul *tempNode = root->child;
+
+        if (tempNode != NULL)
+        {
+            if (tempNode->sibling != NULL)
+            {
+                while (tempNode->sibling != root->child)
+                {
+                    *sumJmlKorban = *sumJmlKorban + tempNode->jumlahKorban;
+                    // printf("^^^%s-%s-%d-%d\n", tempNode->parent, tempNode->kontainer, tempNode->jumlahKorban, tempNode->depth);
+                    tempNode = tempNode->sibling;
+                }
+                *sumJmlKorban = *sumJmlKorban + tempNode->jumlahKorban;
+                root->jumlahKorban = *sumJmlKorban;
+            }
+            else
+            {
+                if (root->depth < tempDepth)
+                {
+                    *sumJmlKorban = 0;
+                }
+                root->jumlahKorban = root->child->jumlahKorban;
+                // printf("^^^%s-%s-%d-%d-%d\n", root->parent, root->kontainer, root->child->jumlahKorban, root->depth, tempDepth);
+
+                tempDepth = root->depth;
+            }
         }
+
+        // printf("^^^%s-%s-%d-%d\n", root->parent, root->kontainer, root->jumlahKorban, root->depth);
     }
 }
 
@@ -445,4 +462,43 @@ int isEqual(simpul *root1, simpul *root2)
         }
     }
     return hasil;
+}
+
+void sumJmlInNode(simpul *root, int *sumJmlKorban)
+{
+    if (root != NULL)
+    {
+        simpul *bantu = root->child;
+
+        if (bantu != NULL)
+        {
+            if (bantu->sibling == NULL)
+            {
+                /*jika memiliki satu simpul anak*/
+                sumJmlInNode(bantu, sumJmlKorban);
+            }
+            else
+            {
+                /*jika memiliki banyak simpul anak*/
+                /*mencetak simpul anak*/
+                while (bantu->sibling != root->child)
+                {
+                    sumJmlInNode(bantu, sumJmlKorban);
+                    bantu = bantu->sibling;
+                }
+                /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
+                sumJmlInNode(bantu, sumJmlKorban);
+                simpul *tempJml = findSimpul(bantu->parent, root);
+            }
+        }
+    }
+}
+
+void setSumJmltoZero(int n)
+{
+    int i;
+    for (i = 0; i < n; i++)
+    {
+        sumJmlNode[i] = 0;
+    }
 }

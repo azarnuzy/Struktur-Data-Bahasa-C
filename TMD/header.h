@@ -3,6 +3,10 @@
 #include <string.h>
 #include <stdlib.h>
 
+int sumJmlNode[100];
+int tempDepth;
+int itr;
+
 typedef struct
 {
     char nodeParent[100];
@@ -16,6 +20,7 @@ typedef struct smp
     char kontainer[100];
     char parent[100];
     int jumlahKorban;
+    int jmlSibling;
     int depth;
     alamatsimpul sibling;
     alamatsimpul child;
@@ -34,6 +39,7 @@ void delChild(char c[], simpul *root);
 simpul *findSimpul(char c[], simpul *root);
 void printTreePreOrder(simpul *root);
 void countJumlahKorban(simpul *root);
-void printTreePostOrder(simpul *root, int *sumJmlKorban);
+void printTreePostOrder(simpul *root, int *sumJmlKorban, int depth);
 void copyTree(simpul *root1, simpul **root2);
 int isEqual(simpul *root1, simpul *root2);
+void setSumJmltoZero(int n);
