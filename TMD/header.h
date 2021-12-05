@@ -32,6 +32,7 @@ typedef struct
 void makeTree(data dataSplit, tree *T);
 data hasilSplit(char input[], int mode);
 void addChild(data dataSplit, simpul *root, simpul *akar);
+void addChildAsc(data dataSplit, simpul *root, simpul *akar);
 void delAll(simpul **root);
 void delChild(char c[], simpul *root);
 simpul *findSimpul(char c[], simpul *root);

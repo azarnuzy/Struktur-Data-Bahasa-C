@@ -43,7 +43,7 @@ data hasilSplit(char input[], int mode)
     return hasil;
 }
 
-void addChild(data dataSplit, simpul *root, simpul *akar)
+void addChildAsc(data dataSplit, simpul *root, simpul *akar)
 {
     if (root != NULL)
     {
@@ -77,7 +77,8 @@ void addChild(data dataSplit, simpul *root, simpul *akar)
                 {
                     temp = root->child;
                     root->child = baru;
-                    baru->sibling = temp;
+                    root->child->sibling = temp;
+                    root->child->sibling->sibling = root->child;
                 }
                 /* kondisi jika angka pertama lebih besar dengan angka yang dimasukan */
                 else
@@ -89,24 +90,32 @@ void addChild(data dataSplit, simpul *root, simpul *akar)
             else
             {
                 simpul *last = root->child;
-                simpul *tempNode = last;
+                simpul *tempNode = NULL;
                 int ketemu = 0;
+                int count = 0;
                 /* mencari simpul anak terakhir karena akan dikaitkan dengan simpul baru sebagai simpul anak terakhir yang baru, 
                 simpul anak terakhir adalah yang memiliki sibling simpul anak pertama, maka selama belum sampai pada simpul anak
                  terakhir, penunjuk last akan berjalan ke simpul anak berikutnya */
                 while (last->sibling != root->child)
                 {
+                    // printf("%d %d*****\n", last->jumlahKorban, baru->jumlahKorban);
                     if (last->jumlahKorban < baru->jumlahKorban && ketemu == 0)
                     {
                         ketemu = 1;
                     }
-                    last = last->sibling;
                     if (ketemu == 0)
                     {
+                        count++;
                         tempNode = last;
                     }
-                }
 
+                    last = last->sibling;
+                }
+                // printf("%d\n", tempNode->jumlahKorban);
+                if (last->jumlahKorban < baru->jumlahKorban && ketemu == 0)
+                {
+                    ketemu = 1;
+                };
                 //kondisi addLast
                 if (ketemu == 0)
                 {
@@ -114,11 +123,20 @@ void addChild(data dataSplit, simpul *root, simpul *akar)
                     last->sibling = baru;
                 }
                 //kondisi addFirst
-                else if (ketemu == 1 && strcmp(tempNode->parent, root->kontainer) == 0)
+                else if (ketemu == 1 && tempNode == 0)
                 {
                     simpul *temp = root->child;
                     root->child = baru;
                     root->child->sibling = temp;
+                    last->sibling = baru;
+                }
+                //kondisi addAfter
+                else
+                {
+                    // printf("*********%s %d\n", tempNode->kontainer, tempNode->jumlahKorban);
+                    simpul *temp = tempNode->sibling;
+                    tempNode->sibling = baru;
+                    baru->sibling = temp;
                 }
             }
         }
@@ -325,7 +343,7 @@ void printTreePreOrder(simpul *root)
 {
     if (root != NULL)
     {
-        printf("%s|%s - %d - %d\n", root->parent, root->kontainer, root->jumlahKorban, root->depth);
+        printf("|%s - %d - %d\n", root->kontainer, root->jumlahKorban, root->depth);
         simpul *bantu = root->child;
         if (bantu != NULL)
         {
@@ -370,19 +388,10 @@ void printTreePostOrder(simpul *root, int *sumJmlKorban)
                 while (bantu->sibling != root->child)
                 {
                     printTreePostOrder(bantu, sumJmlKorban);
-                    itr++;
                     bantu = bantu->sibling;
                 }
                 /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
                 printTreePostOrder(bantu, sumJmlKorban);
-                itr++;
-                if (bantu->jumlahKorban != 0)
-                {
-                    simpul *tempFindNode = findSimpul(bantu->parent, root);
-                    sortingNode(tempFindNode, itr);
-                }
-                itr = 0;
-                printf("%s===%s\n", bantu->kontainer, bantu->parent);
             }
         }
 
@@ -506,42 +515,3 @@ int isEqual(simpul *root1, simpul *root2)
     }
     return hasil;
 }
-
-/* void sortingNode(simpul *root, int iterasi)
-{
-
-    // printf("%d %s-----\n", iterasi, root->child->kontainer);
-    simpul *current = root->child;
-    simpul *prev = NULL;
-
-    printf("%d %d\n", current->jumlahKorban, current->sibling->jumlahKorban);
-    while (current != NULL && current->sibling != NULL && current->sibling != root->child)
-    {
-        if (current->jumlahKorban < current->sibling->jumlahKorban)
-        {
-            if (prev == NULL)
-            {
-                simpul *n;
-                n = current->sibling;
-                current->sibling = n->sibling;
-                n->sibling = current;
-                prev = n;
-                root->child = prev;
-            }
-            else
-            {
-                simpul *n;
-                n = current->sibling;
-                prev->sibling = n;
-                current->sibling = n->sibling;
-                n->sibling = current;
-                prev = n;
-            }
-        }
-        else
-        {
-            prev = current;
-            current = n;
-        }
-    }
-} */
