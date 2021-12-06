@@ -344,7 +344,7 @@ void printTreePreOrder(simpul *root, int *level, simpul *root2, int *branch)
     if (root != NULL)
     {
         *level = root->depth;
-        if (*level == 0)
+        if (*level == firstDepth)
         {
             printf("|%s - %d\n", root->kontainer, root->jumlahKorban);
         }
@@ -364,7 +364,7 @@ void printTreePreOrder(simpul *root, int *level, simpul *root2, int *branch)
                 printf(" ");
             }
 
-            printf("|%s - %d\n", root->kontainer, root->jumlahKorban, root2->kontainer, root2->jumlahKorban);
+            printf("|%s - %d\n", root->kontainer, root->jumlahKorban);
             *branch = *branch + 1;
             root2 = root2->child;
             if (*branch > 0)

@@ -4,9 +4,8 @@
 #include <stdlib.h>
 
 int tempDepth;
-int spasi[100];
 int jmlSpasi;
-int jmlSpasi2;
+int firstDepth;
 typedef struct
 {
     char nodeParent[100];

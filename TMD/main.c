@@ -38,11 +38,11 @@ int main()
     // printf("%s\n", T.root->child->child->sibling->sibling->kontainer);
     printTreePostOrder(T.root, &sumJmlKorban);
     jmlSpasi = 0;
-    jmlSpasi2 = 0;
-    int level = T.root->depth;
+    int level = 0;
     int firstLevel;
     tempDepth = 0;
     int branch = 0;
+    firstDepth = 0;
     printTreePreOrder(T.root, &level, T.root, &branch);
     scanf("%d", &n);
     for (i = 0; i < n; i++)
@@ -51,6 +51,8 @@ int main()
         rootNode = findSimpul(input, T.root);
         branch = 0;
         tempDepth = 0;
+        firstDepth = rootNode->depth;
+        jmlSpasi = 0;
         printTreePreOrder(rootNode, &level, rootNode, &branch);
     }
     return 0;
