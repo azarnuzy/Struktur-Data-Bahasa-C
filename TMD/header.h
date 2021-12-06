@@ -4,7 +4,9 @@
 #include <stdlib.h>
 
 int tempDepth;
-int itr;
+int spasi[100];
+int jmlSpasi;
+int jmlSpasi2;
 typedef struct
 {
     char nodeParent[100];
@@ -36,7 +38,7 @@ void addChildAsc(data dataSplit, simpul *root, simpul *akar);
 void delAll(simpul **root);
 void delChild(char c[], simpul *root);
 simpul *findSimpul(char c[], simpul *root);
-void printTreePreOrder(simpul *root);
+void printTreePreOrder(simpul *root, int *level, simpul *root2, int *branch);
 void printTreePostOrder(simpul *root, int *sumJmlKorban);
 void copyTree(simpul *root1, simpul **root2);
 int isEqual(simpul *root1, simpul *root2);

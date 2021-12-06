@@ -34,10 +34,24 @@ int main()
     int sumJmlKorban = 0;
     int ranting = 0;
     tree T2;
-    itr = 0;
+
     // printf("%s\n", T.root->child->child->sibling->sibling->kontainer);
     printTreePostOrder(T.root, &sumJmlKorban);
-    printTreePreOrder(T.root->child);
-    // printTreePreOrder(T.root);
+    jmlSpasi = 0;
+    jmlSpasi2 = 0;
+    int level = T.root->depth;
+    int firstLevel;
+    tempDepth = 0;
+    int branch = 0;
+    printTreePreOrder(T.root, &level, T.root, &branch);
+    scanf("%d", &n);
+    for (i = 0; i < n; i++)
+    {
+        scanf("%s", input);
+        rootNode = findSimpul(input, T.root);
+        branch = 0;
+        tempDepth = 0;
+        printTreePreOrder(rootNode, &level, rootNode, &branch);
+    }
     return 0;
 }

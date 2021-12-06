@@ -339,18 +339,78 @@ simpul *findSimpul(char c[], simpul *root)
     return hasil;
 }
 
-void printTreePreOrder(simpul *root)
+void printTreePreOrder(simpul *root, int *level, simpul *root2, int *branch)
 {
     if (root != NULL)
     {
-        printf("|%s - %d - %d\n", root->kontainer, root->jumlahKorban, root->depth);
+        *level = root->depth;
+        if (*level == 0)
+        {
+            printf("|%s - %d\n", root->kontainer, root->jumlahKorban);
+        }
+        else if (*level < tempDepth)
+        {
+            int sumDigit = 0;
+            int digit = root2->jumlahKorban;
+            while (digit > 0)
+            {
+                sumDigit++;
+                digit /= 10;
+            }
+            int i;
+            jmlSpasi = 4 + strlen(root2->kontainer) + sumDigit;
+            for (i = 0; i < jmlSpasi; i++)
+            {
+                printf(" ");
+            }
+
+            printf("|%s - %d\n", root->kontainer, root->jumlahKorban, root2->kontainer, root2->jumlahKorban);
+            *branch = *branch + 1;
+            root2 = root2->child;
+            if (*branch > 0)
+            {
+                for (i = 0; i < *branch; i++)
+                {
+                    root2 = root2->sibling;
+                }
+            }
+        }
+        else
+        {
+            int sumDigit = 0;
+            int digit = root2->jumlahKorban;
+            while (digit > 0)
+            {
+                sumDigit++;
+                digit /= 10;
+            }
+
+            if (tempDepth == *level)
+            {
+                jmlSpasi = jmlSpasi;
+            }
+            else
+            {
+                jmlSpasi += 4 + strlen(root2->kontainer) + sumDigit;
+            }
+            int i;
+            for (i = 0; i < jmlSpasi; i++)
+            {
+                printf(" ");
+            }
+            printf("|%s - %d\n", root->kontainer, root->jumlahKorban);
+            root2 = root2->child;
+        }
+        tempDepth = *level;
+
         simpul *bantu = root->child;
+
         if (bantu != NULL)
         {
             if (bantu->sibling == NULL)
             {
                 /*jika memiliki satu simpul anak*/
-                printTreePreOrder(bantu);
+                printTreePreOrder(bantu, level, root2, branch);
             }
             else
             {
@@ -359,11 +419,11 @@ void printTreePreOrder(simpul *root)
                 /*mencetak simpul anak*/
                 while (bantu->sibling != root->child)
                 {
-                    printTreePreOrder(bantu);
+                    printTreePreOrder(bantu, level, root2, branch);
                     bantu = bantu->sibling;
                 }
                 /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
-                printTreePreOrder(bantu);
+                printTreePreOrder(bantu, level, root2, branch);
             }
         }
     }
@@ -417,13 +477,10 @@ void printTreePostOrder(simpul *root, int *sumJmlKorban)
                     *sumJmlKorban = 0;
                 }
                 root->jumlahKorban = root->child->jumlahKorban;
-                // printf("^^^%s-%s-%d-%d-%d\n", root->parent, root->kontainer, root->child->jumlahKorban, root->depth, tempDepth);
 
                 tempDepth = root->depth;
             }
         }
-
-        // printf("^^^%s-%s-%d-%d\n", root->parent, root->kontainer, root->jumlahKorban, root->depth);
     }
 }
 
