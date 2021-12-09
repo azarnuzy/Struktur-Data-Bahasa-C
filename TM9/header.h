@@ -30,7 +30,6 @@ typedef struct
 **copyTree = prosedur untuk menyalin dari satu tree ke tree lain
 **isEqual = prosedur untuk membandingkan tree satu dan tree yang lain
 **findSimpul = fungsi untuk mendapatkan simpul 
-**printGian = prosedur untuk menampilkan hasil pnecarian Gian
  */
 void makeTree(data dataSplit, tree *T);
 void addChild(data dataSplit, simpul *root);
@@ -41,4 +40,3 @@ void printTreePreOrder(simpul *root, int *n);
 void printTreePostOrder(simpul *root);
 void copyTree(simpul *root1, simpul **root2);
 int isEqual(simpul *root1, simpul *root2);
-void printGian(simpul *root);

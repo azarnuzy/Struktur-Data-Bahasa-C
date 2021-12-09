@@ -419,15 +419,3 @@ int isEqual(simpul *root1, simpul *root2)
     }
     return hasil;
 }
-
-void printGian(simpul *root)
-{
-    if (root != NULL)
-    {
-        printf("%s ditemukan\n", root->kontainer);
-    }
-    else
-    {
-        printf("Gian tidak ditemukan\n");
-    }
-}
