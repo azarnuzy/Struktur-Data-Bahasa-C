@@ -6,12 +6,13 @@ void createEmpty(graph *G)
     (*G).first = NULL;
 }
 
-void addSimpul(int c, graph *G)
+void addSimpul(char c, graph *G)
 {
     simpul *baru;
     baru = (simpul *)malloc(sizeof(simpul));
     //memasukan nilai dari input
     baru->kontainer = c;
+    baru->visited = 0;
     baru->next = NULL;
     baru->arc = NULL;
     //kondisi untuk penambahan dengan kondisi graph kosong dan banyak elemen
@@ -63,7 +64,7 @@ void addJalur(simpul *awal, simpul *tujuan, int beban)
     }
 }
 
-simpul *findSimpul(int c, graph G)
+simpul *findSimpul(char c, graph G)
 {
     simpul *hasil = NULL;
     simpul *bantu = G.first;
@@ -156,7 +157,7 @@ void delAll(simpul *awal)
     }
 }
 
-void delSimpul(int c, graph *G)
+void delSimpul(char c, graph *G)
 {
     simpul *hapus = (*G).first;
     if (hapus != NULL)
@@ -233,6 +234,42 @@ void delSimpul(int c, graph *G)
     }
 }
 
+void delEmptyNodeJalur(graph *G)
+{
+    simpul *bantu = G->first;
+    if (bantu != NULL)
+    {
+        while (bantu != NULL)
+        {
+            jalur *bantu_jalur = bantu->arc;
+            if (bantu_jalur == NULL)
+            {
+                delSimpul(bantu->kontainer, G);
+            }
+        }
+    }
+}
+
+void delEmptyArc(graph *G)
+{
+    simpul *bantu = G->first;
+    if (bantu != NULL)
+    {
+        while (bantu != NULL)
+        {
+            jalur *bantu_jalur = bantu->arc;
+            while (bantu_jalur != NULL)
+            {
+                if (findSimpul(bantu_jalur->tujuan->kontainer, *G) == NULL)
+                {
+                    delJalur(bantu_jalur->tujuan->kontainer, bantu);
+                }
+            }
+            bantu = bantu->next;
+        }
+    }
+}
+
 void printGraph(graph G)
 {
     simpul *bantu = G.first;
@@ -240,12 +277,15 @@ void printGraph(graph G)
     {
         while (bantu != NULL)
         {
-            printf("Node %d\n", bantu->kontainer);
+            // printf("Node %c %d\n", bantu->kontainer, bantu);
             jalur *bantu_jalur = bantu->arc;
             while (bantu_jalur != NULL)
             {
-                printf("Jalur %d ke %d\n", bantu->kontainer, bantu_jalur->tujuan->kontainer);
-                bantu_jalur = bantu_jalur->next_jalur;
+                /* printf("Jalur %c ke %c\n", bantu->kontainer, bantu_jalur->tujuan->kontainer);
+                bantu_jalur = bantu_jalur->next_jalur; */
+                if (bantu->visited > 1)
+                {
+                }
             }
             bantu = bantu->next;
         }
@@ -253,5 +293,23 @@ void printGraph(graph G)
     else
     {
         printf("graf kosong\n");
+    }
+}
+
+void cekRoute(graph G, simpul *node)
+{
+    if (node != NULL)
+    {
+        jalur *jalur_bantu = node->arc;
+        while (jalur_bantu != NULL)
+        {
+            simpul *bantu = findSimpul(jalur_bantu->tujuan->kontainer, G);
+            if (bantu->next != NULL)
+            {
+                bantu->visited++;
+                cekRoute(G, bantu);
+            }
+            jalur_bantu = jalur_bantu->next_jalur;
+        }
     }
 }

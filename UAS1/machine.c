@@ -1,13 +1,15 @@
 #include "header.h"
 
-void makeTree(char c, tree *T)
+void makeTree(int kiri, int kanan, tree *T)
 {
     //membuat variabel dari tipe data simpul sebagai masukan dari root nantinya
     simpul *baru;
     //menginisialisasi besarnya nilai dari baru
     baru = (simpul *)malloc(sizeof(simpul));
     //memasukan nilai karakter terhadap variabel baru
-    baru->kontainer = c;
+
+    baru->kanan = kanan;
+    baru->kiri = kiri;
     baru->right = NULL;
     baru->left = NULL;
     (*T).root = baru;
@@ -15,7 +17,7 @@ void makeTree(char c, tree *T)
     baru = NULL;
 }
 
-void addRight(char c, simpul *root)
+void addRight(int kiri, int kanan, simpul *root)
 {
     if (root->right == NULL)
     {
@@ -24,7 +26,9 @@ void addRight(char c, simpul *root)
         simpul *baru;
         //menginisialisasi besarnya nilai dari baru
         baru = (simpul *)malloc(sizeof(simpul));
-        baru->kontainer = c;
+        baru->kanan = kanan;
+        baru->kiri = kiri;
+        // printf("kanan %d %d\n", kiri, kanan);
         baru->right = NULL;
         baru->left = NULL;
         //memasukan nilai baru ke root branch kanan
@@ -36,7 +40,7 @@ void addRight(char c, simpul *root)
     }
 }
 
-void addLeft(char c, simpul *root)
+void addLeft(int kiri, int kanan, simpul *root)
 {
     if (root->left == NULL)
     {
@@ -45,15 +49,53 @@ void addLeft(char c, simpul *root)
         simpul *baru;
         //menginisialisasi besarnya nilai dari baru
         baru = (simpul *)malloc(sizeof(simpul));
-        baru->kontainer = c;
+        // printf("kiri %d %d\n", kiri, kanan);
+        baru->kanan = kanan;
+        baru->kiri = kiri;
         baru->right = NULL;
         baru->left = NULL;
         //memasukan nilai baru ke root branch kanan
         root->left = baru;
     }
+}
+
+void inputData(int kiri, int kanan, simpul *root, int done)
+{
+    //kondisi dimana simpul  bisa dibagi sebanyak lebih dari satu kali lagi
+    if (kiri / 4 != 0 && kanan / 4 != 0)
+    {
+        //menambahkan simpul pada bagian kiri
+        addLeft(kiri / 2, kanan, root);
+        //rekursif dengan kondisi nilai kiri dibagi 2
+        inputData(root->kiri / 2, kanan, root->left, 0);
+        //menambahkan simpul pada bagian kanan
+        addRight(kiri, kanan / 2, root);
+        //rekursif dengan kondisi nilai kanan dibagi 2
+        inputData(root->kiri, root->kanan / 2, root->right, 0);
+    }
+    //kondisi dimana simpul bisa dibagi hanya satu kali lagi
     else
     {
-        printf("sub pohon kiri telah terisi \n");
+        //kondisi dimana simpul bisa dibagi 2
+        if (kiri / 2 != 0 && kanan / 2 != 0)
+        {
+            //menambahkan simpul pada bagian kiri
+            addLeft(kiri / 2, kanan, root);
+            //menampung nilai dari keluaran
+            keluaran[count] = kiri / 2;
+            keluaran[count + 1] = kanan;
+            count += 2;
+        }
+        //kondisi dimana simpul bisa dibagi 2
+        if (kanan / 2 != 0 && kiri / 2 != 0)
+        {
+            //menambahkan simpul pada bagian kanan
+            addRight(kiri, kanan / 2, root);
+            //menampung nilai dari keluaran
+            keluaran[count] = kiri;
+            keluaran[count + 1] = kanan / 2;
+            count += 2;
+        }
     }
 }
 
@@ -85,7 +127,6 @@ void delRight(simpul *root)
 
 void delLeft(simpul *root)
 {
-
     if (root != NULL)
     {
         if (root->left != NULL)
@@ -105,11 +146,11 @@ void printTreePreOrder(simpul *root)
         count--;
         if (count > 0)
         {
-            printf("%c - ", root->kontainer);
+            printf("%d %d", root->kiri, root->kanan);
         }
         else if (count == 0)
         {
-            printf("%c\n", root->kontainer);
+            printf("%d %d\n", root->kiri, root->kanan);
         }
         //menelusuri node secara pre order
         printTreePreOrder(root->left);
@@ -128,11 +169,11 @@ void printTreeInOrder(simpul *root)
         count--;
         if (count > 0)
         {
-            printf("%c - ", root->kontainer);
+            printf("%d - ", root->kanan);
         }
         else if (count == 0)
         {
-            printf("%c\n", root->kontainer);
+            printf("%d\n", root->kanan);
         }
         printTreeInOrder(root->right);
     }
@@ -149,11 +190,11 @@ void printTreePostOrder(simpul *root)
         count--;
         if (count > 0)
         {
-            printf("%c - ", root->kontainer);
+            printf("%d %d ", root->kiri, root->kanan);
         }
         else if (count == 0)
         {
-            printf("%c\n", root->kontainer);
+            printf("%d %d\n", root->kiri, root->kanan);
         }
     }
 }
@@ -163,7 +204,8 @@ void copyTree(simpul *root1, simpul **root2)
     if (root1 != NULL)
     {
         (*root2) = (simpul *)malloc(sizeof(simpul));
-        (*root2)->kontainer = root1->kontainer;
+        (*root2)->kanan = root1->kanan;
+
         if (root1->left != NULL)
         {
             copyTree(root1->left, &(*root2)->left);
@@ -180,26 +222,24 @@ int isEqual(simpul *root1, simpul *root2)
 
     int hasil = 1;
 
-    if ((root1 != NULL) &&
-        (root2 != NULL))
+    if ((root1 != NULL) && (root2 != NULL))
     {
         /* jika simpul pohon 1 dan pohon 2 sama sama tidak NULL */
-        if (root1->kontainer != root2->kontainer)
+        if (root1->kanan != root2->kanan)
         {
-            /* jika isi kontainer simpul pohon 1 dan pohon 2 tidak sama */
+            /* jika isi kanan simpul pohon 1 dan pohon 2 tidak sama */
             hasil = 0;
         }
         else
         {
-            /* jika isi kontainer simpul pohon 1 dan simpul pohon 2 sama, maka telusuri simpul selanjutnya */
+            /* jika isi kanan simpul pohon 1 dan simpul pohon 2 sama, maka telusuri simpul selanjutnya */
             isEqual(root1->left, root2->left);
             isEqual(root1->right, root2->right);
         }
     }
     else
     {
-        if ((root1 != NULL) ||
-            (root2 != NULL))
+        if ((root1 != NULL) || (root2 != NULL))
         {
             /* jika salah satu simpul ada yang NULL */
             hasil = 0;

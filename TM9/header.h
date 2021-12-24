@@ -17,7 +17,7 @@ typedef struct smp
     alamatsimpul sibling;
     alamatsimpul child;
 } simpul;
-//membuat tipe data tersetruktur untuk menampung queue
+//membuat tipe data tersetruktur untuk menampung tree
 typedef struct
 {
     simpul *root;

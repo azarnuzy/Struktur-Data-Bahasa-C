@@ -2,9 +2,13 @@
 
 int main(int argc, char const *argv[])
 {
+    //membuat variabel untuk penamaan graph
     graph G;
+    //sebagai masukan dari simpul yang akan dihapus
     int n;
+    //menginisialisasi nilai awal dari graph
     createEmpty(&G);
+    //menambahkan simpul
     addSimpul(1, &G);
     addSimpul(2, &G);
     addSimpul(3, &G);
@@ -14,6 +18,7 @@ int main(int argc, char const *argv[])
     addSimpul(7, &G);
     addSimpul(8, &G);
 
+    //memasukan jalur ke simpul simpul
     simpul *begin = findSimpul(1, G);
     simpul *end = findSimpul(2, G);
     if ((begin != NULL) && (end != NULL))
@@ -59,13 +64,16 @@ int main(int argc, char const *argv[])
     {
         addJalur(begin, end, 0);
     }
+    //menampilkan keluaran graph
     printGraph(G);
     printf("===========\n");
+    //masukan dari simpul yang akan dihapus
     scanf("%d", &n);
 
     begin = findSimpul(n, G);
     if (begin != NULL)
     {
+        //prosedur untuk menghapus simpul
         delSimpul(n, &G);
     }
     printGraph(G);
