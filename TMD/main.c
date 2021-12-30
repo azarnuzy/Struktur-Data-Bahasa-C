@@ -43,7 +43,10 @@ int main()
     tempDepth = 0;
     int branch = 0;
     firstDepth = 0;
-    printTreePreOrder(T.root, &level, T.root, &branch);
+    printTreePreOrder(T.root, &level, T.root, &branch, T.root, 1);
+    branch = 0;
+    printTreePreOrder(T.root, &level, T.root, &branch, T.root, 2);
+    //printTreePreOrder(T.root, &level, T.root, &branch, T.root, 2);
     scanf("%d", &n);
     for (i = 0; i < n; i++)
     {
@@ -53,8 +56,7 @@ int main()
         tempDepth = 0;
         firstDepth = rootNode->depth;
         jmlSpasi = 0;
-        printTreePreOrder(rootNode, &level, rootNode, &branch);
+        printTreePreOrder(rootNode, &level, rootNode, &branch, T.root, 3);
     }
     return 0;
 }
-
