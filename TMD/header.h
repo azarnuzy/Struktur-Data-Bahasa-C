@@ -6,6 +6,8 @@
 int tempDepth;
 int jmlSpasi;
 int firstDepth;
+int levelSpace[100];
+int baris;
 typedef struct
 {
     char nodeParent[100];
@@ -37,9 +39,11 @@ void addChildAsc(data dataSplit, simpul *root, simpul *akar);
 void delAll(simpul **root);
 void delChild(char c[], simpul *root);
 simpul *findSimpul(char c[], simpul *root);
-void printTreePreOrder(simpul *root, int *level, simpul *root2, int *branch, simpul *root3, int mode);
+void printTreePreOrder(simpul *root);
 void printTreePostOrder(simpul *root, int *sumJmlKorban);
-void setSpace(simpul *root, int *level, simpul *root2, int *branch, simpul *root3, int mode);
+void setSpace(simpul *root);
+void resetSpace();
+void printSpace(int depth);
 void copyTree(simpul *root1, simpul **root2);
 int isEqual(simpul *root1, simpul *root2);
 void sortingNode(simpul *root, int iterasi);

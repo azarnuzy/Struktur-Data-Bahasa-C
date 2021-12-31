@@ -35,28 +35,20 @@ int main()
     int ranting = 0;
     tree T2;
 
-    // printf("%s\n", T.root->child->child->sibling->sibling->kontainer);
     printTreePostOrder(T.root, &sumJmlKorban);
-    jmlSpasi = 0;
-    int level = 0;
-    int firstLevel;
-    tempDepth = 0;
-    int branch = 0;
-    firstDepth = 0;
-    printTreePreOrder(T.root, &level, T.root, &branch, T.root, 1);
-    branch = 0;
-    printTreePreOrder(T.root, &level, T.root, &branch, T.root, 2);
-    //printTreePreOrder(T.root, &level, T.root, &branch, T.root, 2);
+    printf("pohon lengkap:\n");
+    resetSpace();
+    setSpace(T.root);
+    printTreePreOrder(T.root);
     scanf("%d", &n);
+    printf("Sub-pohon:\n");
     for (i = 0; i < n; i++)
     {
         scanf("%s", input);
         rootNode = findSimpul(input, T.root);
-        branch = 0;
-        tempDepth = 0;
-        firstDepth = rootNode->depth;
-        jmlSpasi = 0;
-        printTreePreOrder(rootNode, &level, rootNode, &branch, T.root, 3);
+        resetSpace();
+        setSpace(rootNode);
+        printTreePreOrder(rootNode);
     }
     return 0;
 }

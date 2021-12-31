@@ -341,9 +341,128 @@ simpul *findSimpul(char c[], simpul *root)
     return hasil;
 }
 
-void printTreePreOrder(simpul *root, int *level, simpul *root2, int *branch, simpul *root3, int mode)
+void resetSpace()
 {
+    int i = 0;
+    baris = 0;
+    for (i = 0; i < 100; i++)
+    {
+        levelSpace[i] = 0;
+    }
+}
+
+void setSpace(simpul *root)
+{
+    int i, j = 0;
     if (root != NULL)
+    {
+        int sumDigit = 0;
+        int digit = root->jumlahKorban;
+        while (digit > 0)
+        {
+            sumDigit++;
+            digit /= 10;
+        }
+        int i;
+        int tempLevelSpace = strlen(root->kontainer) + 4 + sumDigit;
+
+        if (tempLevelSpace > levelSpace[root->depth])
+        {
+            levelSpace[root->depth] = tempLevelSpace;
+        }
+
+        simpul *bantu = root->child;
+        if (bantu != NULL)
+        {
+            if (bantu->sibling == NULL)
+            { /*jika memiliki satu simpul anak*/
+                setSpace(bantu);
+            }
+            else
+            { /*jika memiliki banyak simpul anak*/
+                /*mencetak simpul anak*/
+                while (bantu->sibling != root->child)
+                {
+                    setSpace(bantu);
+                    bantu = bantu->sibling;
+                }
+                /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
+                setSpace(bantu);
+            }
+        }
+    }
+    else
+    {
+        printf("kosong");
+    }
+}
+
+void printSpace(int depth)
+{
+    int i, j = 0;
+    int tempSpace = levelSpace[depth - 1];
+    int n = 0;
+
+    for (j = depth - 2; j >= 0; j--)
+    {
+        n += levelSpace[j];
+    }
+
+    tempSpace += n;
+    // printf("%d\n", tempSpace);
+    for (i = 0; i < tempSpace; i++)
+    {
+        printf(" ");
+    }
+}
+
+void printTreePreOrder(simpul *root)
+{
+    int i, j = 0;
+    if (root != NULL)
+    {
+        if (baris > 0)
+        {
+            printf("\n");
+        }
+
+        if (root->depth != 0)
+        {
+            printSpace(root->depth);
+        }
+
+        printf("|%s - %d\n", root->kontainer, root->jumlahKorban);
+
+        baris++;
+
+        simpul *bantu = root->child;
+        if (bantu != NULL)
+        {
+            if (bantu->sibling == NULL)
+            { /*jika memiliki satu simpul anak*/
+                printTreePreOrder(bantu);
+            }
+            else
+            { /*jika memiliki banyak simpul anak*/
+                /*mencetak simpul anak*/
+                while (bantu->sibling != root->child)
+                {
+                    printTreePreOrder(bantu);
+                    bantu = bantu->sibling;
+                }
+                /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
+                printTreePreOrder(bantu);
+            }
+        }
+    }
+    else
+    {
+        printf("kosong");
+    }
+}
+/* void printTreePreOrder(simpul *root, int *level, simpul *root2, int *branch, simpul *root3, int mode)
+{
+    if (root != NULL && root2 != NULL && root3 != NULL)
     {
         *level = root->depth;
         if (*level == firstDepth)
@@ -413,15 +532,17 @@ void printTreePreOrder(simpul *root, int *level, simpul *root2, int *branch, sim
                 if (*branch > 0 && mode == 1)
                 {
                     simpul *bantuan = root3->child;
-
-                    while (bantuan->sibling != root3->child)
+                    if (bantuan != NULL)
                     {
-                        bantuan->sibling->jmlSpace = root3->child->jmlSpace;
-                        // printf("%s %s %d %d %d %d %d\n", bantuan->sibling->kontainer, root->kontainer, root->jmlSpace, tempDepth, *level, root3->child->jmlSpace, *branch);
+                        while (bantuan->sibling != root3->child)
+                        {
+                            bantuan->sibling->jmlSpace = root3->child->jmlSpace;
+                            // printf("%s %s %d %d %d %d %d\n", bantuan->sibling->kontainer, root->kontainer, root->jmlSpace, tempDepth, *level, root3->child->jmlSpace, *branch);
 
-                        bantuan = bantuan->sibling;
+                            bantuan = bantuan->sibling;
+                        }
+                        root->jmlSpace = root3->child->jmlSpace;
                     }
-                    root->jmlSpace = root3->child->jmlSpace;
                 }
             }
             else
@@ -438,12 +559,15 @@ void printTreePreOrder(simpul *root, int *level, simpul *root2, int *branch, sim
                 {
                     simpul *bantuan = root3->child;
                     int penambah = jmlSpasi - root3->child->jmlSpace;
-                    while (bantuan->child != NULL)
+                    if (bantuan != NULL)
                     {
+                        while (bantuan->child != NULL)
+                        {
+                            bantuan->jmlSpace = bantuan->jmlSpace + penambah;
+                            bantuan = bantuan->child;
+                        }
                         bantuan->jmlSpace = bantuan->jmlSpace + penambah;
-                        bantuan = bantuan->child;
                     }
-                    bantuan->jmlSpace = bantuan->jmlSpace + penambah;
 
                     root->jmlSpace = jmlSpasi;
                     root3->child->jmlSpace = jmlSpasi;
@@ -491,29 +615,30 @@ void printTreePreOrder(simpul *root, int *level, simpul *root2, int *branch, sim
 
         simpul *bantu = root->child;
 
-        if (bantu != NULL)
+        if (bantu != NULL && root2 != NULL && root3 != NULL)
         {
             if (bantu->sibling == NULL)
             {
                 /*jika memiliki satu simpul anak*/
-                printTreePreOrder(bantu, level, root2, branch, root3, mode);
-            }
-            else
-            {
-                /*jika memiliki banyak simpul anak*/
+// printTreePreOrder(bantu, level, root2, branch, root3, mode);
+// }
+// else
+// {
+//     /*jika memiliki banyak simpul anak*/
 
-                /*mencetak simpul anak*/
-                while (bantu->sibling != root->child)
-                {
-                    printTreePreOrder(bantu, level, root2, branch, root3, mode);
-                    bantu = bantu->sibling;
-                }
-                /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
-                printTreePreOrder(bantu, level, root2, branch, root3, mode);
-            }
-        }
-    }
-}
+//     /*mencetak simpul anak*/
+//     while (bantu->sibling != root->child)
+//     {
+//         printTreePreOrder(bantu, level, root2, branch, root3, mode);
+//         bantu = bantu->sibling;
+//     }
+//     /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
+//     printTreePreOrder(bantu, level, root2, branch, root3, mode);
+// }
+// }
+// }
+// }
+// * /
 
 void resetJmlSpace(simpul *root)
 {
