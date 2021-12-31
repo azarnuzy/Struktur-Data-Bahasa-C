@@ -36,17 +36,23 @@ int main()
     tree T2;
 
     printTreePostOrder(T.root, &sumJmlKorban);
-    printf("pohon lengkap:\n");
+    printf("pohon lengkap:\n\n");
     resetSpace();
+    firstDepth = 0;
     setSpace(T.root);
     printTreePreOrder(T.root);
     scanf("%d", &n);
-    printf("Sub-pohon:\n");
     for (i = 0; i < n; i++)
     {
         scanf("%s", input);
+        if (i == 0)
+        {
+            printf("\nSub-pohon:\n");
+        }
         rootNode = findSimpul(input, T.root);
         resetSpace();
+        firstDepth = rootNode->depth;
+        printf("\n");
         setSpace(rootNode);
         printTreePreOrder(rootNode);
     }
