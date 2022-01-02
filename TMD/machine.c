@@ -2,11 +2,15 @@
 
 void makeTree(data dataSplit, tree *T)
 {
+    //membuat variabel dari tipe data simpul sebagai masukan dari root nantinya
     simpul *node;
+    //menginisialisasi besarnya nilai dari baru
     node = (simpul *)malloc(sizeof(simpul));
+    //memasukan nilai masukan terhadap variabel baru
     strcpy(node->kontainer, dataSplit.nodeChild);
     node->depth = 0;
     node->jmlSpace = 0;
+    node->jumlahKorban = dataSplit.jumlahKorban;
     node->sibling = NULL;
     node->child = NULL;
     (*T).root = node;
@@ -16,23 +20,28 @@ data hasilSplit(char input[], int mode)
 {
     data hasil;
     int j = 0;
+    //sebagai variabel untuk mensplit input yang dipisahkan oleh tanda'#'
     char *splitInput = strtok(input, "#");
+    //menyalin parent ke hasil
     strcpy(hasil.nodeParent, splitInput);
 
     while (splitInput != NULL)
     {
         if (j == 1)
         {
+            //menyalin simpul child ke hasil
             strcpy(hasil.nodeChild, splitInput);
         }
         else if (j == 2)
         {
             if (strcmp(splitInput, "-1") != 0)
             {
+                //mengubah jumlah korban dari string ke int dan menyalinnya
                 hasil.jumlahKorban = atoi(splitInput);
             }
             else
             {
+                //menjadikan nilai hasil jumlah korban 0
                 hasil.jumlahKorban = 0;
             }
         }
@@ -44,16 +53,21 @@ data hasilSplit(char input[], int mode)
     return hasil;
 }
 
-void addChildAsc(data dataSplit, simpul *root, simpul *akar)
+void addChildDesc(data dataSplit, simpul *root, simpul *akar)
 {
     if (root != NULL)
     {
         /* jika simpul root tidak kosong, berarti dapat ditambahkan simpul anak*/
+        //membuat variabel dari tipe data simpul sebagai masukan dari root nantinya
         simpul *baru;
+        //sebagai variabel dari simpul parent
         simpul *bantu;
+        //mencari simpul parent pada tree
         bantu = findSimpul(dataSplit.nodeParent, akar);
 
+        //menginisialisasi besarnya nilai dari baru
         baru = (simpul *)malloc(sizeof(simpul));
+        //menyalin nilai hasil data split
         strcpy(baru->kontainer, dataSplit.nodeChild);
         strcpy(baru->parent, dataSplit.nodeParent);
         baru->jumlahKorban = dataSplit.jumlahKorban;
@@ -94,26 +108,24 @@ void addChildAsc(data dataSplit, simpul *root, simpul *akar)
                 simpul *last = root->child;
                 simpul *tempNode = NULL;
                 int ketemu = 0;
-                int count = 0;
                 /* mencari simpul anak terakhir karena akan dikaitkan dengan simpul baru sebagai simpul anak terakhir yang baru, 
                 simpul anak terakhir adalah yang memiliki sibling simpul anak pertama, maka selama belum sampai pada simpul anak
                  terakhir, penunjuk last akan berjalan ke simpul anak berikutnya */
                 while (last->sibling != root->child)
                 {
-                    // printf("%d %d*****\n", last->jumlahKorban, baru->jumlahKorban);
+                    /* kondisi untuk menemukan variabel ketemu dan tempNode */
                     if (last->jumlahKorban < baru->jumlahKorban && ketemu == 0)
                     {
                         ketemu = 1;
                     }
+
                     if (ketemu == 0)
                     {
-                        count++;
                         tempNode = last;
                     }
 
                     last = last->sibling;
                 }
-                // printf("%d\n", tempNode->jumlahKorban);
                 if (last->jumlahKorban < baru->jumlahKorban && ketemu == 0)
                 {
                     ketemu = 1;
@@ -135,7 +147,6 @@ void addChildAsc(data dataSplit, simpul *root, simpul *akar)
                 //kondisi addAfter
                 else
                 {
-                    // printf("*********%s %d\n", tempNode->kontainer, tempNode->jumlahKorban);
                     simpul *temp = tempNode->sibling;
                     tempNode->sibling = baru;
                     baru->sibling = temp;
@@ -344,6 +355,7 @@ simpul *findSimpul(char c[], simpul *root)
 void resetSpace()
 {
     int i = 0;
+    //untuk mereset nilai array dan baris menjadi 0
     baris = 0;
     for (i = 0; i < 100; i++)
     {
@@ -356,16 +368,19 @@ void setSpace(simpul *root)
     int i, j = 0;
     if (root != NULL)
     {
+        //sebagai variabel untuk menghitung banyaknya digit pada jumlah korban
         int sumDigit = 0;
         int digit = root->jumlahKorban;
+        //perulangan untuk menghitung digit
         while (digit > 0)
         {
             sumDigit++;
             digit /= 10;
         }
         int i;
+        //sebagai tampungan sementara dari banyaknya spasi
         int tempLevelSpace = strlen(root->kontainer) + 4 + sumDigit;
-
+        //sebagai kondisi jika tampungan sementara lebih besar maka akan dimasukan ke dalam levelSpace
         if (tempLevelSpace > levelSpace[root->depth])
         {
             levelSpace[root->depth] = tempLevelSpace;
@@ -400,16 +415,17 @@ void setSpace(simpul *root)
 void printSpace(int depth)
 {
     int i, j = 0;
+    //variabel untuk menampung nilai level space untuk nantinya di jadikan batasan untuk keluaran
     int tempSpace = levelSpace[depth - 1];
     int n = 0;
-
+    //menjumlahkan nilai level space sebelumnya
     for (j = depth - 2; j >= 0; j--)
     {
         n += levelSpace[j];
     }
-
+    //menjumlahkan nilai level space sebelumnya
     tempSpace += n;
-    // printf("%d\n", tempSpace);
+    //mengeluarkan spasi
     for (i = 0; i < tempSpace; i++)
     {
         printf(" ");
@@ -421,16 +437,18 @@ void printTreePreOrder(simpul *root)
     int i, j = 0;
     if (root != NULL)
     {
+        //new line pada setiap baris
         if (baris > 0)
         {
             printf("\n");
         }
 
+        //menampilkan spasi
         if (root->depth != firstDepth)
         {
             printSpace(root->depth);
         }
-
+        //menampilkan hasil dari simpul child dan banyaknya korban
         printf("|%s - %d\n", root->kontainer, root->jumlahKorban);
 
         baris++;
@@ -490,56 +508,63 @@ void resetJmlSpace(simpul *root)
     }
 }
 
-void printTreePostOrder(simpul *root, int *sumJmlKorban)
+int countJmlKorban(simpul *root)
 {
+    int hasil = 0;
     if (root != NULL)
     {
+        hasil = root->jumlahKorban;
+        // printf("%d %s=\n", root->jumlahKorban, root->kontainer);
         simpul *bantu = root->child;
+
+        /* jika simpul tidak kosong */
         if (bantu != NULL)
         {
             if (bantu->sibling == NULL)
             {
                 /*jika memiliki satu simpul anak*/
-                printTreePostOrder(bantu, sumJmlKorban);
+                hasil += countJmlKorban(bantu);
             }
             else
             {
                 /*jika memiliki banyak simpul anak*/
-                /*mencetak simpul anak*/
                 while (bantu->sibling != root->child)
                 {
-                    printTreePostOrder(bantu, sumJmlKorban);
+                    hasil += countJmlKorban(bantu);
                     bantu = bantu->sibling;
                 }
-                /*memproses simpul anak terakhir karena belum terproses dalam pengulangan*/
-                printTreePostOrder(bantu, sumJmlKorban);
+                hasil += countJmlKorban(bantu);
             }
         }
+    }
+    return hasil;
+}
 
-        simpul *tempNode = root->child;
-
-        if (tempNode != NULL)
+void countAllJmlKorban(simpul *root)
+{
+    if (root != NULL)
+    {
+        root->jumlahKorban = countJmlKorban(root);
+        // printf("%d %d %s-=\n", root->jumlahKorban, countJmlKorban(root), root->kontainer);
+        simpul *bantu = root->child;
+        //jika simpul tidak kosong
+        if (bantu != NULL)
         {
-            if (tempNode->sibling != NULL)
+            //jika simpul hanya memiliki satu anak
+            if (bantu->sibling == NULL)
             {
-                while (tempNode->sibling != root->child)
-                {
-                    *sumJmlKorban = *sumJmlKorban + tempNode->jumlahKorban;
-                    // printf("^^^%s-%s-%d-%d\n", tempNode->parent, tempNode->kontainer, tempNode->jumlahKorban, tempNode->depth);
-                    tempNode = tempNode->sibling;
-                }
-                *sumJmlKorban = *sumJmlKorban + tempNode->jumlahKorban;
-                root->jumlahKorban = *sumJmlKorban;
+                countAllJmlKorban(bantu);
             }
+            //jika simpul memiliki banyak anak
             else
             {
-                if (root->depth < tempDepth)
+                while (bantu->sibling != root->child)
                 {
-                    *sumJmlKorban = 0;
+                    countAllJmlKorban(bantu);
+                    bantu = bantu->sibling;
                 }
-                root->jumlahKorban = root->child->jumlahKorban;
-
-                tempDepth = root->depth;
+                //menghitung nilai anak terakhir
+                countAllJmlKorban(bantu);
             }
         }
     }
