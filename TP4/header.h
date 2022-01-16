@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
-/*Saya Muhammad Azar Nuzy 2004191 mengerjakan soal Kompetisi Kuis 2 2021 C1 dalam 
+/*Saya Muhammad Azar Nuzy 2004191 mengerjakan soal Kompetisi TP 4 2021 C1 dalam 
 mata kuliah Struktur Data untuk keberkahanNya maka saya tidak melakukan kecurangan
 seperti yang telah dispesifikasikan. Aamiin*/
 //membuat tipe data terstruktur untuk menampung data antrian

@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <string.h>
+/*Saya Muhammad Azar Nuzy 2004191 mengerjakan soal Kompetisi TP 4 2021 C1 dalam 
+mata kuliah Struktur Data untuk keberkahanNya maka saya tidak melakukan kecurangan
+seperti yang telah dispesifikasikan. Aamiin*/
 //membuat tipe data terstruktur untuk menampung makanan
 typedef struct
 {
@@ -24,7 +27,7 @@ typedef struct
 void createEmpty(stack *S);
 int isEmpty(stack S);
 int isFull(stack S);
-void push(char judul[], char tahun[],char band[], stack *S);
+void push(char judul[], char tahun[], char band[], stack *S);
 void pop(stack *S);
 void popMove(stack *SA, stack *SB);
 void printStack(stack S, int mode);
