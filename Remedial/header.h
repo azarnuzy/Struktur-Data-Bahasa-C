@@ -3,6 +3,11 @@
 /*Saya Muhammad Azar Nuzy 2004191 mengerjakan soal Kompetisi Remedial 2021 C1 dalam 
 mata kuliah Struktur Data untuk keberkahanNya maka saya tidak melakukan kecurangan
 seperti yang telah dispesifikasikan. Aamiin*/
+
+int max;
+int tempMax;
+char cJalurPetani[100];
+char hasilJalur[100];
 //menginisialisasikan tipe data terstruktur dari alamat simpul
 typedef struct smp *alamatsimpul;
 //menginisialisasikan tipe data terstruktur dari alamat jalur
@@ -18,6 +23,7 @@ typedef struct smp
 typedef struct jlr
 {
     int kontainer_jalur;
+    int jml_jalur;
     alamatjalur next_jalur;
     simpul *tujuan;
 } jalur;
@@ -41,5 +47,4 @@ void delJalur(int ctujuan, simpul *awal);
 void delAll(simpul *awal);
 void delSimpul(char c, graph *G);
 void printGraph(graph G);
-void cekRoute(graph G, simpul *node);
-void cekVisited(graph G);
+int jalurPetani(simpul *begin, char end, graph G, int i);

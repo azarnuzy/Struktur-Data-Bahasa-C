@@ -43,6 +43,7 @@ void addJalur(simpul *awal, simpul *tujuan, int beban)
     baru->kontainer_jalur = beban;
     baru->next_jalur = NULL;
     baru->tujuan = tujuan;
+    baru->jml_jalur = beban;
     if (awal->arc == NULL)
     {
         /*jika list jalur kosong*/
@@ -233,42 +234,6 @@ void delSimpul(char c, graph *G)
     }
 }
 
-void delEmptyNodeJalur(graph *G)
-{
-    simpul *bantu = G->first;
-    if (bantu != NULL)
-    {
-        while (bantu != NULL)
-        {
-            jalur *bantu_jalur = bantu->arc;
-            if (bantu_jalur == NULL)
-            {
-                delSimpul(bantu->kontainer, G);
-            }
-        }
-    }
-}
-
-void delEmptyArc(graph *G)
-{
-    simpul *bantu = G->first;
-    if (bantu != NULL)
-    {
-        while (bantu != NULL)
-        {
-            jalur *bantu_jalur = bantu->arc;
-            while (bantu_jalur != NULL)
-            {
-                if (findSimpul(bantu_jalur->tujuan->kontainer, *G) == NULL)
-                {
-                    delJalur(bantu_jalur->tujuan->kontainer, bantu);
-                }
-            }
-            bantu = bantu->next;
-        }
-    }
-}
-
 void printGraph(graph G)
 {
     simpul *bantu = G.first;
@@ -289,5 +254,43 @@ void printGraph(graph G)
     else
     {
         printf("graf kosong\n");
+    }
+}
+
+int jalurPetani(simpul *begin, char end, graph G, int i)
+{
+    if (begin != NULL)
+    {
+        jalur *bantu_jalur = begin->arc;
+        simpul *bantu;
+        int flag = 0;
+        while (bantu_jalur != NULL && flag != 1)
+        {
+            //jika jalur yang ditelusuri sama dengan akhir
+            if (end == begin->kontainer)
+            {
+                // printf("%d %d\n", tempMax, max);
+                if (max > tempMax)
+                {
+                    max = tempMax;
+                }
+                tempMax = 0;
+                flag = 1;
+            }
+            //jika jalur masih belum sama
+            else
+            {
+                tempMax = tempMax + begin->arc->kontainer_jalur;
+                // printf("%c %d %d %d\n", begin->kontainer, tempMax, max, i);
+                bantu = findSimpul(bantu_jalur->tujuan->kontainer, G);
+                if (bantu != NULL)
+                {
+                    jalurPetani(bantu, end, G, i);
+                    // printf("%c %c %d\n", bantu->kontainer, end, i);
+                }
+                i++;
+                bantu_jalur = bantu_jalur->next_jalur;
+            }
+        }
     }
 }
